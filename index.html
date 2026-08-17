@@ -178,6 +178,22 @@
   }
   .team-slot input:focus{outline:none; border-color:var(--coral);}
 
+  .pool-schedule{margin-top:16px; padding-top:14px; border-top:1px solid var(--line);}
+  .pool-schedule .ps-label{
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem; text-transform:uppercase;
+    letter-spacing:0.08em; color:rgba(11,30,51,0.45); margin-bottom:10px;
+  }
+  .ps-row{
+    display:flex; gap:10px; align-items:baseline; padding:6px 0; font-size:0.82rem;
+    border-bottom:1px dashed var(--line);
+  }
+  .ps-row:last-child{border-bottom:none;}
+  .ps-time{font-family:'IBM Plex Mono',monospace; color:var(--coral); font-weight:600; flex:0 0 68px;}
+  .ps-matches{flex:1; line-height:1.5;}
+  .ps-match{display:block;}
+  .ps-court{color:rgba(11,30,51,0.4); font-size:0.75rem;}
+  .ps-bye{color:rgba(11,30,51,0.4); font-size:0.75rem; font-style:italic; display:block; margin-top:2px;}
+
   .schedule{background:var(--ink); color:var(--cream);}
   .schedule .section-head h2{color:var(--cream);}
   .schedule .tag{color:var(--optic);}
@@ -379,13 +395,13 @@
         <div class="t-badge">Warm-Up</div>
       </div>
       <div class="t-row">
-        <div class="t-time">1:30 PM</div>
+        <div class="t-time">1:15 PM</div>
         <div><div class="t-name">Pool Play Begins</div><div class="t-desc">Round robin pool play across all courts — every team plays every team in its pool. Games to 11, win by 2.</div></div>
         <div class="t-badge">Pool Play</div>
       </div>
       <div class="t-row">
         <div class="t-time">3:30 PM</div>
-        <div><div class="t-name">Championship Bracket</div><div class="t-desc">Top-seeded teams advance to single-elimination bracket play for the tournament title.</div></div>
+        <div><div class="t-name">Championship Bracket</div><div class="t-desc">Top 2 teams from each pool (10 total) enter a single-elimination bracket — top seeds get a first-round bye, then quarterfinals, semifinals, and the championship final.</div></div>
         <div class="t-badge">Knockout</div>
       </div>
       <div class="t-row">
@@ -414,12 +430,12 @@
       <div class="rule-card">
         <div class="rn">RULE 02</div>
         <h3>Seeding</h3>
-        <p>Top teams from each pool advance to an 8-team single-elimination bracket, seeded by pool finish and point differential.</p>
+        <p>The top 2 finishers from each pool advance — 10 teams total — seeded 1–10 by pool finish and point differential.</p>
       </div>
       <div class="rule-card">
         <div class="rn">RULE 03</div>
-        <h3>Knockout bracket</h3>
-        <p>Single elimination, best of 3 games to 11. Quarterfinals, semifinals, and championship on featured courts.</p>
+        <h3>Championship bracket</h3>
+        <p>10-team single elimination. The top 6 seeds receive a first-round bye; seeds 7–10 play two Round 1 matches. Winners join the byed teams in the quarterfinals, followed by semifinals and the final. Single game to 9, win by 1.</p>
       </div>
       <div class="rule-card">
         <div class="rn">RULE 04</div>
@@ -577,6 +593,64 @@
 
         card.appendChild(slot);
       }
+
+      // Round-robin match schedule for this pool (5 teams, 5 rounds, 2 matches + 1 bye per round)
+      var poolIndex = POOLS.indexOf(pool);
+      var courtA = poolIndex * 2 + 1;
+      var courtB = poolIndex * 2 + 2;
+      var rounds = [
+        {time:'1:15 PM', matches:[[1,4],[2,3]], bye:0},
+        {time:'1:35 PM', matches:[[0,4],[1,2]], bye:3},
+        {time:'1:55 PM', matches:[[0,3],[2,4]], bye:1},
+        {time:'2:15 PM', matches:[[0,2],[1,3]], bye:4},
+        {time:'2:35 PM', matches:[[0,1],[3,4]], bye:2}
+      ];
+
+      function teamLabel(i){
+        var v = (teamsData[pool] && teamsData[pool][i]) ? teamsData[pool][i] : '';
+        return v ? v : ('Team ' + (i+1));
+      }
+
+      var sched = document.createElement('div');
+      sched.className = 'pool-schedule';
+
+      var schedLabel = document.createElement('div');
+      schedLabel.className = 'ps-label';
+      schedLabel.textContent = 'Match Schedule — Courts ' + courtA + ' & ' + courtB;
+      sched.appendChild(schedLabel);
+
+      rounds.forEach(function(r){
+        var row = document.createElement('div');
+        row.className = 'ps-row';
+
+        var timeEl = document.createElement('div');
+        timeEl.className = 'ps-time';
+        timeEl.textContent = r.time;
+        row.appendChild(timeEl);
+
+        var matchesEl = document.createElement('div');
+        matchesEl.className = 'ps-matches';
+
+        var m1 = document.createElement('span');
+        m1.className = 'ps-match';
+        m1.innerHTML = teamLabel(r.matches[0][0]) + ' vs ' + teamLabel(r.matches[0][1]) + ' <span class="ps-court">· Court ' + courtA + '</span>';
+        matchesEl.appendChild(m1);
+
+        var m2 = document.createElement('span');
+        m2.className = 'ps-match';
+        m2.innerHTML = teamLabel(r.matches[1][0]) + ' vs ' + teamLabel(r.matches[1][1]) + ' <span class="ps-court">· Court ' + courtB + '</span>';
+        matchesEl.appendChild(m2);
+
+        var byeEl = document.createElement('span');
+        byeEl.className = 'ps-bye';
+        byeEl.textContent = 'Bye: ' + teamLabel(r.bye);
+        matchesEl.appendChild(byeEl);
+
+        row.appendChild(matchesEl);
+        sched.appendChild(row);
+      });
+
+      card.appendChild(sched);
       grid.appendChild(card);
     });
   }
