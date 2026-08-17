@@ -3,31 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AFK Open — Charity Pickleball Tournament</title>
+<meta name="color-scheme" content="light only">
+<title>All For Kids Tournament — Charity Pickleball Tournament</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
   :root{
-    --teal: #0F6E6E;
-    --teal-deep: #0A4F4F;
-    --optic: #E4F23D;
-    --coral: #FF5A4E;
-    --ink: #0B2027;
-    --cream: #FBFBF3;
-    --line: rgba(11,32,39,0.14);
+    --teal: #1F4E8C;
+    --teal-deep: #143A6B;
+    --optic: #F2B705;
+    --coral: #E0B400;
+    --ink: #0B1E33;
+    --cream: #F7F9FC;
+    --line: rgba(11,30,51,0.14);
   }
 
   *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth; color-scheme:light;}
   body{
     background:var(--cream);
     color:var(--ink);
-    font-family:'Space Grotesk', sans-serif;
+    font-family:'Nunito', sans-serif;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
   }
 
-  h1,h2,h3{font-family:'Archivo Black', sans-serif; font-weight:400; line-height:1.02; letter-spacing:-0.01em;}
+  h1,h2,h3{font-family:'Poppins', sans-serif; font-weight:800; line-height:1.02; letter-spacing:-0.01em;}
   .mono{font-family:'IBM Plex Mono', monospace;}
 
   a{color:inherit; text-decoration:none;}
@@ -51,13 +52,13 @@
     display:flex; align-items:center; justify-content:space-between;
     padding-top:14px; padding-bottom:14px;
   }
-  .logo{font-family:'Archivo Black', sans-serif; font-size:1.15rem; display:flex; align-items:center; gap:8px;}
+  .logo{font-family:'Poppins', sans-serif; font-size:1rem; display:flex; align-items:center; gap:8px; white-space:nowrap;}
   .logo .dot{width:10px; height:10px; border-radius:50%; background:var(--coral); display:inline-block;}
   .navlinks{display:flex; gap:28px; font-size:0.85rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;}
   .navlinks a{padding-bottom:2px; border-bottom:2px solid transparent; transition:border-color .15s;}
   .navlinks a:hover{border-color:var(--coral);}
   .btn{
-    display:inline-block; font-family:'Space Grotesk',sans-serif; font-weight:700;
+    display:inline-block; font-family:'Nunito',sans-serif; font-weight:700;
     padding:11px 22px; border-radius:999px; border:2px solid var(--ink);
     font-size:0.85rem; letter-spacing:0.02em; transition:transform .12s, box-shadow .12s;
   }
@@ -82,19 +83,19 @@
   }
   .eyebrow::before{content:''; width:8px; height:8px; background:var(--optic); border-radius:50%; display:inline-block;}
   .hero h1{
-    font-size:clamp(3rem, 9vw, 6.4rem);
+    font-size:clamp(2.2rem, 7vw, 4.6rem);
     color:var(--cream);
   }
   .hero h1 span{color:var(--optic);}
   .hero-sub{
-    max-width:560px; font-size:1.1rem; margin-top:22px; line-height:1.55; color:rgba(251,251,243,0.88);
+    max-width:560px; font-size:1.1rem; margin-top:22px; line-height:1.55; color:rgba(255,255,255,0.88);
   }
   .hero-meta{
     display:flex; flex-wrap:wrap; gap:14px; margin-top:34px;
   }
   .meta-chip{
     font-family:'IBM Plex Mono', monospace; font-size:0.82rem;
-    border:1.5px solid rgba(251,251,243,0.35); border-radius:999px;
+    border:1.5px solid rgba(255,255,255,0.35); border-radius:999px;
     padding:8px 16px; color:var(--cream);
   }
   .hero-cta{display:flex; gap:14px; margin-top:36px; flex-wrap:wrap;}
@@ -130,14 +131,14 @@
 
   /* MISSION */
   .mission{display:grid; grid-template-columns: 1.1fr 0.9fr; gap:48px; align-items:start;}
-  .mission p{font-size:1.05rem; line-height:1.7; color:rgba(11,32,39,0.82);}
+  .mission p{font-size:1.05rem; line-height:1.7; color:rgba(11,30,51,0.82);}
   .mission p + p{margin-top:16px;}
   .stat-card{
     background:var(--ink); color:var(--cream); border-radius:18px; padding:28px;
   }
-  .stat-row{display:flex; justify-content:space-between; align-items:baseline; padding:14px 0; border-bottom:1px dashed rgba(251,251,243,0.25);}
+  .stat-row{display:flex; justify-content:space-between; align-items:baseline; padding:14px 0; border-bottom:1px dashed rgba(255,255,255,0.25);}
   .stat-row:last-child{border-bottom:none;}
-  .stat-row .num{font-family:'Archivo Black',sans-serif; font-size:1.6rem; color:var(--optic);}
+  .stat-row .num{font-family:'Poppins',sans-serif; font-size:1.6rem; color:var(--optic);}
   .stat-row .label{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; opacity:0.85;}
   @media (max-width:820px){ .mission{grid-template-columns:1fr;} }
 
@@ -156,7 +157,7 @@
     background:var(--cream);
   }
   .pool-card h3{
-    font-family:'Archivo Black',sans-serif; font-size:1.1rem; margin-bottom:14px;
+    font-family:'Poppins',sans-serif; font-size:1.1rem; margin-bottom:14px;
     display:flex; align-items:center; gap:8px;
   }
   .pool-card h3 .pnum{
@@ -168,29 +169,29 @@
     font-size:0.92rem;
   }
   .team-slot:last-child{border-bottom:none;}
-  .team-slot .slot-idx{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:rgba(11,32,39,0.4); width:16px;}
+  .team-slot .slot-idx{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:rgba(11,30,51,0.4); width:16px;}
   .team-slot .slot-name{flex:1; color:var(--ink);}
-  .team-slot .slot-name.tbd{color:rgba(11,32,39,0.35); font-style:italic;}
+  .team-slot .slot-name.tbd{color:rgba(11,30,51,0.35); font-style:italic;}
   .team-slot input{
     flex:1; border:1.5px solid var(--ink); border-radius:8px; padding:7px 10px;
-    font-family:'Space Grotesk',sans-serif; font-size:0.9rem; background:var(--cream); color:var(--ink);
+    font-family:'Nunito',sans-serif; font-size:0.9rem; background:var(--cream); color:var(--ink);
   }
   .team-slot input:focus{outline:none; border-color:var(--coral);}
 
   .schedule{background:var(--ink); color:var(--cream);}
   .schedule .section-head h2{color:var(--cream);}
   .schedule .tag{color:var(--optic);}
-  .timeline{border-top:1px solid rgba(251,251,243,0.2);}
+  .timeline{border-top:1px solid rgba(255,255,255,0.2);}
   .t-row{
     display:grid; grid-template-columns: 130px 1fr auto; gap:20px; align-items:center;
-    padding:20px 0; border-bottom:1px solid rgba(251,251,243,0.2);
+    padding:20px 0; border-bottom:1px solid rgba(255,255,255,0.2);
   }
   .t-time{font-family:'IBM Plex Mono',monospace; color:var(--optic); font-size:0.95rem;}
   .t-name{font-size:1.15rem; font-weight:600;}
   .t-desc{font-size:0.88rem; opacity:0.7; margin-top:4px; font-weight:400;}
   .t-badge{
     font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-transform:uppercase;
-    border:1px solid rgba(251,251,243,0.35); border-radius:999px; padding:5px 12px; white-space:nowrap;
+    border:1px solid rgba(255,255,255,0.35); border-radius:999px; padding:5px 12px; white-space:nowrap;
   }
   @media (max-width:640px){
     .t-row{grid-template-columns:1fr; gap:6px;}
@@ -205,22 +206,22 @@
   }
   .rule-card:hover{transform:translateY(-4px);}
   .rule-card .rn{
-    font-family:'Archivo Black',sans-serif; font-size:0.85rem; color:var(--coral);
+    font-family:'Poppins',sans-serif; font-size:0.85rem; color:var(--coral);
     margin-bottom:10px; letter-spacing:0.04em;
   }
-  .rule-card h3{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.05rem; margin-bottom:10px;}
-  .rule-card p{font-size:0.92rem; line-height:1.55; color:rgba(11,32,39,0.75);}
+  .rule-card h3{font-family:'Nunito',sans-serif; font-weight:700; font-size:1.05rem; margin-bottom:10px;}
+  .rule-card p{font-size:0.92rem; line-height:1.55; color:rgba(11,30,51,0.75);}
   @media (max-width:820px){ .rules-grid{grid-template-columns:1fr;} }
 
   /* SPONSORS */
-  .tiers{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .tiers{display:grid; grid-template-columns:repeat(2,1fr); gap:22px;}
   .tier{
     border-radius:16px; padding:30px 24px; color:var(--cream);
   }
   .tier.ace{background:var(--coral);}
   .tier.dink{background:var(--teal);}
   .tier.volley{background:var(--ink);}
-  .tier .tname{font-family:'Archivo Black',sans-serif; font-size:1.3rem; margin-bottom:6px;}
+  .tier .tname{font-family:'Poppins',sans-serif; font-size:1.3rem; margin-bottom:6px;}
   .tier .tamt{font-family:'IBM Plex Mono',monospace; font-size:0.85rem; opacity:0.85; margin-bottom:16px;}
   .tier ul{list-style:none; font-size:0.88rem; line-height:1.9; opacity:0.95;}
   .tier ul li::before{content:'— ';}
@@ -229,12 +230,12 @@
   .sponsor-strip{
     margin-top:44px; padding-top:36px; border-top:1px dashed var(--line);
   }
-  .sponsor-strip .label{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(11,32,39,0.5); margin-bottom:18px;}
+  .sponsor-strip .label{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(11,30,51,0.5); margin-bottom:18px;}
   .logo-row{display:flex; flex-wrap:wrap; gap:16px;}
   .logo-slot{
     flex:1 1 140px; height:64px; border:1.5px dashed var(--line); border-radius:10px;
     display:flex; align-items:center; justify-content:center;
-    font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:rgba(11,32,39,0.4);
+    font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:rgba(11,30,51,0.4);
   }
 
   /* BRACKET / REGISTER CTA */
@@ -252,8 +253,8 @@
 
   /* FOOTER */
   footer{background:var(--ink); color:var(--cream); padding:48px 0 28px;}
-  .foot-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; padding-bottom:28px; border-bottom:1px solid rgba(251,251,243,0.15);}
-  .foot-logo{font-family:'Archivo Black',sans-serif; font-size:1.2rem;}
+  .foot-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; padding-bottom:28px; border-bottom:1px solid rgba(255,255,255,0.15);}
+  .foot-logo{font-family:'Poppins',sans-serif; font-size:1.2rem;}
   .foot-links{display:flex; gap:22px; font-size:0.85rem;}
   .foot-links a{opacity:0.75; transition:opacity .15s;}
   .foot-links a:hover{opacity:1; color:var(--optic);}
@@ -267,7 +268,7 @@
 
 <nav>
   <div class="wrap">
-    <div class="logo"><span class="dot"></span>AFK OPEN</div>
+    <div class="logo"><span class="dot"></span>ALL FOR KIDS</div>
     <div class="navlinks">
       <a href="#mission">Mission</a>
       <a href="#teams">Teams</a>
@@ -276,39 +277,39 @@
       <a href="#sponsors">Sponsors</a>
       <a href="#register">Bracket</a>
     </div>
-    <a href="#register" class="btn btn-solid">Bracket</a>
+    <a href="#register" class="btn btn-solid">Register</a>
   </div>
 </nav>
 
 <header class="hero">
   <div class="ball-track"><div class="ball"></div></div>
   <div class="wrap">
-    <div class="eyebrow">All For Kids · Charity Tournament</div>
-    <h1>AFK<br><span>OPEN.</span></h1>
-    <p class="hero-sub">Sixteen paddles. One bracket. Every dink, drive, and dink-off raises money for All For Kids — because sometimes the best way to help kids is to get absolutely competitive on a 44-foot court.</p>
+    <div class="eyebrow">All For Kids Young Professionals · 2nd Annual</div>
+    <h1>ALL FOR KIDS<br><span>TOURNAMENT.</span></h1>
+    <p class="hero-sub">Compete • Connect • Give Back. Join us for the 2nd Annual All For Kids Pickleball Tournament — every rally helps raise critical funds to support children and families across Southern California. Grab your paddle, bring your team.</p>
     <div class="hero-meta">
-      <span class="meta-chip">📅 Date — TBD</span>
-      <span class="meta-chip">📍 Venue — TBD, Los Angeles</span>
+      <span class="meta-chip">📅 October 4, 2026 · 1:00–4:00 PM</span>
+      <span class="meta-chip">📍 Manhattan Country Club, Manhattan Beach</span>
       <span class="meta-chip">👥 50 players · 25 teams · Pool Play + Bracket</span>
-      <span class="meta-chip">🎟️ Entry — TBD</span>
+      <span class="meta-chip">🎟️ $50 per player · includes food & beverages</span>
     </div>
     <div class="hero-cta">
-      <a href="#schedule" class="btn btn-solid">View schedule</a>
+      <a href="https://allforkids.org/event/2nd-annual-all-for-kids-pickleball-tournament/" class="btn btn-solid">Register on All For Kids</a>
       <a href="#rules" class="btn btn-ghost">Tournament format</a>
     </div>
   </div>
 </header>
 <div class="kitchen-line"></div>
 
-<section id="mission">
+<section id="mission" style="background:var(--teal); color:var(--cream);">
   <div class="wrap mission">
     <div>
       <div class="section-head" style="margin-bottom:20px;">
-        <span class="tag">01 — Why we play</span>
+        <span class="tag" style="color:var(--optic);">01 — Why we play</span>
       </div>
-      <h2 style="margin-bottom:18px; font-size:clamp(1.8rem,4vw,2.4rem);">Every point scored is a point for kids.</h2>
-      <p>All For Kids supports children and families across LA who need it most — and this tournament turns a Saturday of pickleball into direct support for their programs.</p>
-      <p>Fifty players, twenty-five teams, one bracket. Whether you're a 3.0 weekend warrior or you've got a tournament shirt collection, the format is built to keep every match close and every game meaningful.</p>
+      <h2 style="margin-bottom:18px; font-size:clamp(1.8rem,4vw,2.4rem); color:var(--cream);">Every point scored is a point for kids.</h2>
+      <p style="color:rgba(255,255,255,0.9);">All For Kids supports children and families across Southern California who need it most — and this tournament turns a Sunday of pickleball into direct support for their programs.</p>
+      <p style="color:rgba(255,255,255,0.9);">Fifty players, twenty-five teams, one bracket. Whether you're a 3.0 weekend warrior or you've got a tournament shirt collection, the format is built to keep every match close and every game meaningful.</p>
     </div>
     <div class="stat-card">
       <div class="stat-row"><span class="label">Teams</span><span class="num">25</span></div>
@@ -338,7 +339,7 @@
         <button id="admin-exit" class="btn btn-ghost" style="border-color:var(--ink); font-size:0.78rem; padding:9px 18px;">Exit</button>
       </div>
     </div>
-    <div id="teams-status" class="mono" style="font-size:0.78rem; color:rgba(11,32,39,0.5); margin-bottom:18px; display:none;"></div>
+    <div id="teams-status" class="mono" style="font-size:0.78rem; color:rgba(11,30,51,0.5); margin-bottom:18px; display:none;"></div>
 
     <div id="pools-grid" class="pools-grid"></div>
   </div>
@@ -352,35 +353,31 @@
       <span class="tag">02 — Game day</span>
       <h2>Schedule</h2>
     </div>
+    <p style="color:rgba(255,255,255,0.65); font-size:0.92rem; margin-top:-20px; margin-bottom:36px; max-width:520px;">A full afternoon of pickleball, community, and giving back — from first serve to final trophy. All times are approximate and subject to change on event day.</p>
     <div class="timeline">
       <div class="t-row">
-        <div class="t-time">8:00 AM</div>
-        <div><div class="t-name">Check-in & warm-up</div><div class="t-desc">Paddle check, coffee, court assignments</div></div>
-        <div class="t-badge">Open</div>
+        <div class="t-time">12:45 PM</div>
+        <div><div class="t-name">Arrival & Check-In</div><div class="t-desc">Team check-in, paddle inspection, and court assignments. Light refreshments available on arrival.</div></div>
+        <div class="t-badge">Doors Open</div>
       </div>
       <div class="t-row">
-        <div class="t-time">8:30 AM</div>
-        <div><div class="t-name">Round robin pool play</div><div class="t-desc">Five pools of five teams, games to 11</div></div>
+        <div class="t-time">1:00 PM</div>
+        <div><div class="t-name">Welcome & Warm-Up</div><div class="t-desc">Opening remarks from All For Kids Young Professionals, followed by a structured warm-up on assigned courts.</div></div>
+        <div class="t-badge">Warm-Up</div>
+      </div>
+      <div class="t-row">
+        <div class="t-time">1:30 PM</div>
+        <div><div class="t-name">Pool Play Begins</div><div class="t-desc">Round robin pool play across all courts — every team plays every team in its pool. Games to 11, win by 2.</div></div>
         <div class="t-badge">Pool Play</div>
       </div>
       <div class="t-row">
-        <div class="t-time">11:30 AM</div>
-        <div><div class="t-name">Lunch break</div><div class="t-desc">Food + raffle for AFK</div></div>
-        <div class="t-badge">Break</div>
-      </div>
-      <div class="t-row">
-        <div class="t-time">12:30 PM</div>
-        <div><div class="t-name">Single-elim bracket</div><div class="t-desc">Top seeds advance, best of 3</div></div>
+        <div class="t-time">3:30 PM</div>
+        <div><div class="t-name">Championship Bracket</div><div class="t-desc">Top-seeded teams advance to single-elimination bracket play for the tournament title.</div></div>
         <div class="t-badge">Knockout</div>
       </div>
       <div class="t-row">
-        <div class="t-time">3:00 PM</div>
-        <div><div class="t-name">Championship match</div><div class="t-desc">Winner takes the AFK Open paddle</div></div>
-        <div class="t-badge">Final</div>
-      </div>
-      <div class="t-row">
-        <div class="t-time">3:45 PM</div>
-        <div><div class="t-name">Awards & closing</div><div class="t-desc">Trophy, photos, thank-yous</div></div>
+        <div class="t-time">4:00 PM</div>
+        <div><div class="t-name">Awards & Closing Remarks</div><div class="t-desc">Trophy presentation, thank-yous to sponsors and volunteers, and a wrap-up celebrating what the day raised for AFK.</div></div>
         <div class="t-badge">Wrap</div>
       </div>
     </div>
@@ -436,45 +433,29 @@
   <div class="wrap">
     <div class="section-head">
       <span class="tag">04 — Support AFK</span>
-      <h2>Sponsorship tiers</h2>
+      <h2>Sponsorship</h2>
     </div>
     <div class="tiers">
       <div class="tier ace">
-        <div class="tname">Ace</div>
-        <div class="tamt">$2,500+</div>
+        <div class="tname">All For Kids Ace Sponsorship</div>
+        <div class="tamt">$1,000</div>
         <ul>
-          <li>Presenting sponsor branding</li>
-          <li>Logo on all courts & signage</li>
-          <li>4 player entries included</li>
-          <li>Championship trophy naming</li>
+          <li>Four player spots included</li>
+          <li>Acknowledgment on tournament signage</li>
         </ul>
       </div>
-      <div class="tier dink">
-        <div class="tname">Dink</div>
-        <div class="tamt">$1,000+</div>
-        <ul>
-          <li>Logo on event signage</li>
-          <li>Shout-out at awards</li>
-          <li>2 player entries included</li>
-        </ul>
-      </div>
-      <div class="tier volley">
-        <div class="tname">Volley</div>
-        <div class="tamt">$500+</div>
-        <ul>
-          <li>Logo on website</li>
-          <li>Listed in program</li>
-          <li>1 player entry included</li>
-        </ul>
+      <div class="tier dink" style="display:flex; flex-direction:column; justify-content:center;">
+        <div class="tname" style="font-size:1.05rem;">Custom packages available</div>
+        <p style="font-size:0.9rem; opacity:0.9; margin-top:8px; line-height:1.5;">For custom sponsorship packages, reach out directly.</p>
+        <a href="mailto:willcooper@allforkids.org" class="btn btn-solid" style="margin-top:16px; align-self:flex-start; background:var(--cream); color:var(--ink); box-shadow:3px 3px 0 var(--ink);">Email Will Cooper</a>
       </div>
     </div>
     <div class="sponsor-strip">
-      <div class="label">Our sponsors</div>
+      <div class="label">Thank you to our current event sponsors</div>
       <div class="logo-row">
-        <div class="logo-slot">Your logo here</div>
-        <div class="logo-slot">Your logo here</div>
-        <div class="logo-slot">Your logo here</div>
-        <div class="logo-slot">Your logo here</div>
+        <div class="logo-slot">HUB — Title Sponsor</div>
+        <div class="logo-slot">KPMG</div>
+        <div class="logo-slot">Oaktree</div>
       </div>
     </div>
   </div>
@@ -485,10 +466,10 @@
 <section id="register">
   <div class="wrap">
     <div class="cta-band">
-      <h2>Follow the bracket as it unfolds</h2>
+      <h2>Ready to grab a paddle for a good cause?</h2>
       <div class="cta-actions">
-        <a href="#schedule" class="btn btn-solid">Full schedule</a>
-        <a href="#" class="btn btn-outline-ink">View live bracket</a>
+        <a href="https://allforkids.org/event/2nd-annual-all-for-kids-pickleball-tournament/" class="btn btn-solid">Register on All For Kids</a>
+        <a href="#schedule" class="btn btn-outline-ink">Full schedule</a>
       </div>
     </div>
   </div>
@@ -497,17 +478,18 @@
 <footer>
   <div class="wrap">
     <div class="foot-top">
-      <div class="foot-logo">AFK OPEN</div>
+      <div class="foot-logo">ALL FOR KIDS</div>
       <div class="foot-links">
         <a href="#mission">Mission</a>
+        <a href="#teams">Teams</a>
         <a href="#schedule">Schedule</a>
         <a href="#rules">Rules</a>
         <a href="#sponsors">Sponsors</a>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© 2026 AFK Open · Benefiting All For Kids</span>
-      <span>Built for the community, one dink at a time.</span>
+      <span>© 2026 All For Kids Young Professionals · Benefiting All For Kids</span>
+      <span>Manhattan Country Club · Manhattan Beach, CA</span>
     </div>
   </div>
 </footer>
@@ -537,7 +519,7 @@
   function showStatus(msg, isError){
     statusEl.style.display = 'block';
     statusEl.textContent = msg;
-    statusEl.style.color = isError ? '#c0392b' : 'rgba(11,32,39,0.5)';
+    statusEl.style.color = isError ? '#c0392b' : 'rgba(11,30,51,0.5)';
     setTimeout(function(){ statusEl.style.display = 'none'; }, 3000);
   }
 
