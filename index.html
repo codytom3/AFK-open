@@ -233,10 +233,11 @@
   .sponsor-strip .label{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(11,30,51,0.5); margin-bottom:18px;}
   .logo-row{display:flex; flex-wrap:wrap; gap:16px;}
   .logo-slot{
-    flex:1 1 140px; height:64px; border:1.5px dashed var(--line); border-radius:10px;
-    display:flex; align-items:center; justify-content:center;
-    font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:rgba(11,30,51,0.4);
+    flex:1 1 140px; height:80px; border:1.5px solid var(--line); border-radius:10px;
+    display:flex; align-items:center; justify-content:center; padding:14px;
+    background:#fff;
   }
+  .logo-slot img{max-width:100%; max-height:100%; object-fit:contain;}
 
   /* BRACKET / REGISTER CTA */
   .cta-band{
@@ -268,7 +269,7 @@
 
 <nav>
   <div class="wrap">
-    <div class="logo"><span class="dot"></span>ALL FOR KIDS</div>
+    <div class="logo"><img src="https://allforkids.org/wp-content/uploads/2026/07/cropped-afk-favicon-1-270x270.png" alt="All For Kids" style="height:32px; width:32px; border-radius:6px;">ALL FOR KIDS</div>
     <div class="navlinks">
       <a href="#mission">Mission</a>
       <a href="#teams">Teams</a>
@@ -453,9 +454,9 @@
     <div class="sponsor-strip">
       <div class="label">Thank you to our current event sponsors</div>
       <div class="logo-row">
-        <div class="logo-slot">HUB — Title Sponsor</div>
-        <div class="logo-slot">KPMG</div>
-        <div class="logo-slot">Oaktree</div>
+        <div class="logo-slot"><img src="https://www.hubinternational.com/Assets/Hub/images/default_opengraph_image.png" alt="HUB International — Title Sponsor"></div>
+        <div class="logo-slot"><img src="https://cdn.brandfetch.io/kpmg.com/fallback/lettermark/theme/dark/h/256/w/256/icon?c=1bfwsmEH20zzEfSNTed" alt="KPMG"></div>
+        <div class="logo-slot"><img src="https://www.uspec.org/images/oaktree.png" alt="Oaktree"></div>
       </div>
     </div>
   </div>
