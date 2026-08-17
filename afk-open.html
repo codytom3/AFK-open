@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFK Open — Charity Pickleball Tournament</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root{
+    --teal: #0F6E6E;
+    --teal-deep: #0A4F4F;
+    --optic: #E4F23D;
+    --coral: #FF5A4E;
+    --ink: #0B2027;
+    --cream: #FBFBF3;
+    --line: rgba(11,32,39,0.14);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  h1,h2,h3{font-family:'Archivo Black', sans-serif; font-weight:400; line-height:1.02; letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+
+  /* kitchen line divider - dashed non-volley zone line motif */
+  .kitchen-line{
+    height:10px;
+    background-image: repeating-linear-gradient(90deg, var(--ink) 0 26px, transparent 26px 44px);
+    opacity:0.85;
+  }
+  .kitchen-line.teal-bg{background-image: repeating-linear-gradient(90deg, var(--optic) 0 26px, transparent 26px 44px);}
+
+  /* NAV */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:var(--cream);
+    border-bottom:2px solid var(--ink);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:14px; padding-bottom:14px;
+  }
+  .logo{font-family:'Archivo Black', sans-serif; font-size:1.15rem; display:flex; align-items:center; gap:8px;}
+  .logo .dot{width:10px; height:10px; border-radius:50%; background:var(--coral); display:inline-block;}
+  .navlinks{display:flex; gap:28px; font-size:0.85rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;}
+  .navlinks a{padding-bottom:2px; border-bottom:2px solid transparent; transition:border-color .15s;}
+  .navlinks a:hover{border-color:var(--coral);}
+  .btn{
+    display:inline-block; font-family:'Space Grotesk',sans-serif; font-weight:700;
+    padding:11px 22px; border-radius:999px; border:2px solid var(--ink);
+    font-size:0.85rem; letter-spacing:0.02em; transition:transform .12s, box-shadow .12s;
+  }
+  .btn-solid{background:var(--coral); color:var(--cream); box-shadow:3px 3px 0 var(--ink);}
+  .btn-solid:hover{transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--ink);}
+  .btn-ghost{background:transparent; color:var(--ink);}
+  .btn-ghost:hover{background:var(--ink); color:var(--cream);}
+  @media (max-width:720px){ .navlinks{display:none;} }
+
+  /* HERO */
+  .hero{
+    background:var(--teal);
+    color:var(--cream);
+    position:relative;
+    padding:76px 0 56px;
+    overflow:hidden;
+  }
+  .hero .wrap{position:relative; z-index:2;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--optic); margin-bottom:18px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:''; width:8px; height:8px; background:var(--optic); border-radius:50%; display:inline-block;}
+  .hero h1{
+    font-size:clamp(3rem, 9vw, 6.4rem);
+    color:var(--cream);
+  }
+  .hero h1 span{color:var(--optic);}
+  .hero-sub{
+    max-width:560px; font-size:1.1rem; margin-top:22px; line-height:1.55; color:rgba(251,251,243,0.88);
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap:14px; margin-top:34px;
+  }
+  .meta-chip{
+    font-family:'IBM Plex Mono', monospace; font-size:0.82rem;
+    border:1.5px solid rgba(251,251,243,0.35); border-radius:999px;
+    padding:8px 16px; color:var(--cream);
+  }
+  .hero-cta{display:flex; gap:14px; margin-top:36px; flex-wrap:wrap;}
+  .hero .btn-ghost{border-color:var(--cream); color:var(--cream);}
+  .hero .btn-ghost:hover{background:var(--cream); color:var(--teal-deep);}
+
+  /* bouncing ball svg path across hero */
+  .ball-track{position:absolute; inset:0; z-index:1; pointer-events:none;}
+  .ball{
+    position:absolute; width:22px; height:22px; border-radius:50%;
+    background:var(--optic);
+    box-shadow: inset -3px -3px 0 rgba(0,0,0,0.15);
+    animation: bounce 3.4s ease-in-out infinite;
+    top:20%; left:78%;
+  }
+  .ball::before, .ball::after{
+    content:''; position:absolute; width:100%; height:1px; background:rgba(0,0,0,0.18); top:50%; left:0;
+  }
+  @keyframes bounce{
+    0%,100%{ transform: translateY(0) translateX(0); }
+    25%{ transform: translateY(90px) translateX(-30px); }
+    50%{ transform: translateY(20px) translateX(-60px); }
+    75%{ transform: translateY(110px) translateX(-90px); }
+  }
+  @media (prefers-reduced-motion: reduce){ .ball{animation:none;} }
+  @media (max-width:720px){ .ball-track{display:none;} }
+
+  /* SECTION generic */
+  section{padding:72px 0;}
+  .section-head{display:flex; align-items:baseline; gap:16px; margin-bottom:36px;}
+  .section-head .tag{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--coral); text-transform:uppercase; letter-spacing:0.1em;}
+  .section-head h2{font-size:clamp(1.8rem,4vw,2.6rem);}
+
+  /* MISSION */
+  .mission{display:grid; grid-template-columns: 1.1fr 0.9fr; gap:48px; align-items:start;}
+  .mission p{font-size:1.05rem; line-height:1.7; color:rgba(11,32,39,0.82);}
+  .mission p + p{margin-top:16px;}
+  .stat-card{
+    background:var(--ink); color:var(--cream); border-radius:18px; padding:28px;
+  }
+  .stat-row{display:flex; justify-content:space-between; align-items:baseline; padding:14px 0; border-bottom:1px dashed rgba(251,251,243,0.25);}
+  .stat-row:last-child{border-bottom:none;}
+  .stat-row .num{font-family:'Archivo Black',sans-serif; font-size:1.6rem; color:var(--optic);}
+  .stat-row .label{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; opacity:0.85;}
+  @media (max-width:820px){ .mission{grid-template-columns:1fr;} }
+
+  /* SCHEDULE - scoreboard style timeline */
+  /* TEAMS / ADMIN */
+  .admin-bar{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;
+    background:var(--optic); border-radius:12px; padding:14px 18px; margin-bottom:24px;
+  }
+  .admin-note{color:var(--ink); font-size:0.78rem;}
+  .pools-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:18px;
+  }
+  .pool-card{
+    border:2px solid var(--ink); border-radius:16px; padding:20px;
+    background:var(--cream);
+  }
+  .pool-card h3{
+    font-family:'Archivo Black',sans-serif; font-size:1.1rem; margin-bottom:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .pool-card h3 .pnum{
+    background:var(--coral); color:var(--cream); width:26px; height:26px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center; font-size:0.8rem;
+  }
+  .team-slot{
+    display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px dashed var(--line);
+    font-size:0.92rem;
+  }
+  .team-slot:last-child{border-bottom:none;}
+  .team-slot .slot-idx{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:rgba(11,32,39,0.4); width:16px;}
+  .team-slot .slot-name{flex:1; color:var(--ink);}
+  .team-slot .slot-name.tbd{color:rgba(11,32,39,0.35); font-style:italic;}
+  .team-slot input{
+    flex:1; border:1.5px solid var(--ink); border-radius:8px; padding:7px 10px;
+    font-family:'Space Grotesk',sans-serif; font-size:0.9rem; background:var(--cream); color:var(--ink);
+  }
+  .team-slot input:focus{outline:none; border-color:var(--coral);}
+
+  .schedule{background:var(--ink); color:var(--cream);}
+  .schedule .section-head h2{color:var(--cream);}
+  .schedule .tag{color:var(--optic);}
+  .timeline{border-top:1px solid rgba(251,251,243,0.2);}
+  .t-row{
+    display:grid; grid-template-columns: 130px 1fr auto; gap:20px; align-items:center;
+    padding:20px 0; border-bottom:1px solid rgba(251,251,243,0.2);
+  }
+  .t-time{font-family:'IBM Plex Mono',monospace; color:var(--optic); font-size:0.95rem;}
+  .t-name{font-size:1.15rem; font-weight:600;}
+  .t-desc{font-size:0.88rem; opacity:0.7; margin-top:4px; font-weight:400;}
+  .t-badge{
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-transform:uppercase;
+    border:1px solid rgba(251,251,243,0.35); border-radius:999px; padding:5px 12px; white-space:nowrap;
+  }
+  @media (max-width:640px){
+    .t-row{grid-template-columns:1fr; gap:6px;}
+    .t-badge{justify-self:start;}
+  }
+
+  /* RULES */
+  .rules-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .rule-card{
+    border:2px solid var(--ink); border-radius:16px; padding:26px;
+    background:var(--cream); position:relative; transition:transform .15s;
+  }
+  .rule-card:hover{transform:translateY(-4px);}
+  .rule-card .rn{
+    font-family:'Archivo Black',sans-serif; font-size:0.85rem; color:var(--coral);
+    margin-bottom:10px; letter-spacing:0.04em;
+  }
+  .rule-card h3{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.05rem; margin-bottom:10px;}
+  .rule-card p{font-size:0.92rem; line-height:1.55; color:rgba(11,32,39,0.75);}
+  @media (max-width:820px){ .rules-grid{grid-template-columns:1fr;} }
+
+  /* SPONSORS */
+  .tiers{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .tier{
+    border-radius:16px; padding:30px 24px; color:var(--cream);
+  }
+  .tier.ace{background:var(--coral);}
+  .tier.dink{background:var(--teal);}
+  .tier.volley{background:var(--ink);}
+  .tier .tname{font-family:'Archivo Black',sans-serif; font-size:1.3rem; margin-bottom:6px;}
+  .tier .tamt{font-family:'IBM Plex Mono',monospace; font-size:0.85rem; opacity:0.85; margin-bottom:16px;}
+  .tier ul{list-style:none; font-size:0.88rem; line-height:1.9; opacity:0.95;}
+  .tier ul li::before{content:'— ';}
+  @media (max-width:820px){ .tiers{grid-template-columns:1fr;} }
+
+  .sponsor-strip{
+    margin-top:44px; padding-top:36px; border-top:1px dashed var(--line);
+  }
+  .sponsor-strip .label{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(11,32,39,0.5); margin-bottom:18px;}
+  .logo-row{display:flex; flex-wrap:wrap; gap:16px;}
+  .logo-slot{
+    flex:1 1 140px; height:64px; border:1.5px dashed var(--line); border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:rgba(11,32,39,0.4);
+  }
+
+  /* BRACKET / REGISTER CTA */
+  .cta-band{
+    background:var(--optic); color:var(--ink);
+    border-radius:22px; padding:52px 40px; text-align:left;
+    display:flex; justify-content:space-between; align-items:center; gap:30px; flex-wrap:wrap;
+  }
+  .cta-band h2{font-size:clamp(1.6rem,4vw,2.2rem); max-width:520px;}
+  .cta-band .btn-solid{background:var(--ink); color:var(--optic); box-shadow:3px 3px 0 var(--coral);}
+  .cta-band .btn-solid:hover{box-shadow:5px 5px 0 var(--coral);}
+  .cta-actions{display:flex; gap:12px; flex-wrap:wrap;}
+  .btn-outline-ink{border:2px solid var(--ink); color:var(--ink); background:transparent;}
+  .btn-outline-ink:hover{background:var(--ink); color:var(--optic);}
+
+  /* FOOTER */
+  footer{background:var(--ink); color:var(--cream); padding:48px 0 28px;}
+  .foot-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; padding-bottom:28px; border-bottom:1px solid rgba(251,251,243,0.15);}
+  .foot-logo{font-family:'Archivo Black',sans-serif; font-size:1.2rem;}
+  .foot-links{display:flex; gap:22px; font-size:0.85rem;}
+  .foot-links a{opacity:0.75; transition:opacity .15s;}
+  .foot-links a:hover{opacity:1; color:var(--optic);}
+  .foot-bottom{padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-family:'IBM Plex Mono',monospace; font-size:0.75rem; opacity:0.55;}
+
+  ::selection{background:var(--optic); color:var(--ink);}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--coral); outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span>AFK OPEN</div>
+    <div class="navlinks">
+      <a href="#mission">Mission</a>
+      <a href="#teams">Teams</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#rules">Rules</a>
+      <a href="#sponsors">Sponsors</a>
+      <a href="#register">Bracket</a>
+    </div>
+    <a href="#register" class="btn btn-solid">Bracket</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="ball-track"><div class="ball"></div></div>
+  <div class="wrap">
+    <div class="eyebrow">All For Kids · Charity Tournament</div>
+    <h1>AFK<br><span>OPEN.</span></h1>
+    <p class="hero-sub">Sixteen paddles. One bracket. Every dink, drive, and dink-off raises money for All For Kids — because sometimes the best way to help kids is to get absolutely competitive on a 44-foot court.</p>
+    <div class="hero-meta">
+      <span class="meta-chip">📅 Date — TBD</span>
+      <span class="meta-chip">📍 Venue — TBD, Los Angeles</span>
+      <span class="meta-chip">👥 50 players · 25 teams · Pool Play + Bracket</span>
+      <span class="meta-chip">🎟️ Entry — TBD</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#schedule" class="btn btn-solid">View schedule</a>
+      <a href="#rules" class="btn btn-ghost">Tournament format</a>
+    </div>
+  </div>
+</header>
+<div class="kitchen-line"></div>
+
+<section id="mission">
+  <div class="wrap mission">
+    <div>
+      <div class="section-head" style="margin-bottom:20px;">
+        <span class="tag">01 — Why we play</span>
+      </div>
+      <h2 style="margin-bottom:18px; font-size:clamp(1.8rem,4vw,2.4rem);">Every point scored is a point for kids.</h2>
+      <p>All For Kids supports children and families across LA who need it most — and this tournament turns a Saturday of pickleball into direct support for their programs.</p>
+      <p>Fifty players, twenty-five teams, one bracket. Whether you're a 3.0 weekend warrior or you've got a tournament shirt collection, the format is built to keep every match close and every game meaningful.</p>
+    </div>
+    <div class="stat-card">
+      <div class="stat-row"><span class="label">Teams</span><span class="num">25</span></div>
+      <div class="stat-row"><span class="label">Players</span><span class="num">50</span></div>
+      <div class="stat-row"><span class="label">Pools</span><span class="num">5</span></div>
+      <div class="stat-row"><span class="label">Format</span><span class="num mono" style="font-size:1.1rem;">RR + KO</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="kitchen-line"></div>
+
+<section id="teams">
+  <div class="wrap">
+    <div class="section-head" style="justify-content:space-between; width:100%;">
+      <div style="display:flex; align-items:baseline; gap:16px;">
+        <span class="tag">Pools</span>
+        <h2>Teams</h2>
+      </div>
+      <button id="admin-toggle" class="btn btn-ghost" style="border-color:var(--ink); font-size:0.75rem; padding:8px 16px;">Organizer sign-in</button>
+    </div>
+
+    <div id="admin-bar" class="admin-bar" style="display:none;">
+      <span class="mono admin-note">Organizer mode — edit team names below, then save.</span>
+      <div style="display:flex; gap:10px;">
+        <button id="teams-save" class="btn btn-solid" style="font-size:0.78rem; padding:9px 18px;">Save changes</button>
+        <button id="admin-exit" class="btn btn-ghost" style="border-color:var(--ink); font-size:0.78rem; padding:9px 18px;">Exit</button>
+      </div>
+    </div>
+    <div id="teams-status" class="mono" style="font-size:0.78rem; color:rgba(11,32,39,0.5); margin-bottom:18px; display:none;"></div>
+
+    <div id="pools-grid" class="pools-grid"></div>
+  </div>
+</section>
+
+<div class="kitchen-line"></div>
+
+<section id="schedule" class="schedule">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">02 — Game day</span>
+      <h2>Schedule</h2>
+    </div>
+    <div class="timeline">
+      <div class="t-row">
+        <div class="t-time">8:00 AM</div>
+        <div><div class="t-name">Check-in & warm-up</div><div class="t-desc">Paddle check, coffee, court assignments</div></div>
+        <div class="t-badge">Open</div>
+      </div>
+      <div class="t-row">
+        <div class="t-time">8:30 AM</div>
+        <div><div class="t-name">Round robin pool play</div><div class="t-desc">Five pools of five teams, games to 11</div></div>
+        <div class="t-badge">Pool Play</div>
+      </div>
+      <div class="t-row">
+        <div class="t-time">11:30 AM</div>
+        <div><div class="t-name">Lunch break</div><div class="t-desc">Food + raffle for AFK</div></div>
+        <div class="t-badge">Break</div>
+      </div>
+      <div class="t-row">
+        <div class="t-time">12:30 PM</div>
+        <div><div class="t-name">Single-elim bracket</div><div class="t-desc">Top seeds advance, best of 3</div></div>
+        <div class="t-badge">Knockout</div>
+      </div>
+      <div class="t-row">
+        <div class="t-time">3:00 PM</div>
+        <div><div class="t-name">Championship match</div><div class="t-desc">Winner takes the AFK Open paddle</div></div>
+        <div class="t-badge">Final</div>
+      </div>
+      <div class="t-row">
+        <div class="t-time">3:45 PM</div>
+        <div><div class="t-name">Awards & closing</div><div class="t-desc">Trophy, photos, thank-yous</div></div>
+        <div class="t-badge">Wrap</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="kitchen-line teal-bg" style="background-color:var(--ink);"></div>
+
+<section id="rules">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">03 — Format</span>
+      <h2>Tournament rules</h2>
+    </div>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rn">RULE 01</div>
+        <h3>Pool play</h3>
+        <p>25 teams split into 5 pools of 5. Round robin within each pool — every team plays every other team in its pool. Games to 11, win by 2.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rn">RULE 02</div>
+        <h3>Seeding</h3>
+        <p>Top teams from each pool advance to an 8-team single-elimination bracket, seeded by pool finish and point differential.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rn">RULE 03</div>
+        <h3>Knockout bracket</h3>
+        <p>Single elimination, best of 3 games to 11. Quarterfinals, semifinals, and championship on featured courts.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rn">RULE 04</div>
+        <h3>Scoring</h3>
+        <p>Standard USAPA rally scoring rules apply. Self-officiated pool play; line judges for bracket rounds.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rn">RULE 05</div>
+        <h3>Equipment</h3>
+        <p>Bring your own paddle. Loaner paddles and approved balls available at check-in.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rn">RULE 06</div>
+        <h3>Code of conduct</h3>
+        <p>It's a charity event first, a tournament second. Good calls, good sportsmanship, good vibes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="kitchen-line"></div>
+
+<section id="sponsors">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">04 — Support AFK</span>
+      <h2>Sponsorship tiers</h2>
+    </div>
+    <div class="tiers">
+      <div class="tier ace">
+        <div class="tname">Ace</div>
+        <div class="tamt">$2,500+</div>
+        <ul>
+          <li>Presenting sponsor branding</li>
+          <li>Logo on all courts & signage</li>
+          <li>4 player entries included</li>
+          <li>Championship trophy naming</li>
+        </ul>
+      </div>
+      <div class="tier dink">
+        <div class="tname">Dink</div>
+        <div class="tamt">$1,000+</div>
+        <ul>
+          <li>Logo on event signage</li>
+          <li>Shout-out at awards</li>
+          <li>2 player entries included</li>
+        </ul>
+      </div>
+      <div class="tier volley">
+        <div class="tname">Volley</div>
+        <div class="tamt">$500+</div>
+        <ul>
+          <li>Logo on website</li>
+          <li>Listed in program</li>
+          <li>1 player entry included</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sponsor-strip">
+      <div class="label">Our sponsors</div>
+      <div class="logo-row">
+        <div class="logo-slot">Your logo here</div>
+        <div class="logo-slot">Your logo here</div>
+        <div class="logo-slot">Your logo here</div>
+        <div class="logo-slot">Your logo here</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="kitchen-line"></div>
+
+<section id="register">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Follow the bracket as it unfolds</h2>
+      <div class="cta-actions">
+        <a href="#schedule" class="btn btn-solid">Full schedule</a>
+        <a href="#" class="btn btn-outline-ink">View live bracket</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-logo">AFK OPEN</div>
+      <div class="foot-links">
+        <a href="#mission">Mission</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#rules">Rules</a>
+        <a href="#sponsors">Sponsors</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 AFK Open · Benefiting All For Kids</span>
+      <span>Built for the community, one dink at a time.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var POOLS = ['A','B','C','D','E'];
+  var SLOTS_PER_POOL = 5;
+  var STORAGE_KEY = 'afk-open-teams';
+  var ORGANIZER_CODE = 'AFKOPEN2026'; // change this if you want a different sign-in code
+
+  var grid = document.getElementById('pools-grid');
+  var adminToggle = document.getElementById('admin-toggle');
+  var adminBar = document.getElementById('admin-bar');
+  var adminExit = document.getElementById('admin-exit');
+  var saveBtn = document.getElementById('teams-save');
+  var statusEl = document.getElementById('teams-status');
+  var isAdmin = false;
+  var teamsData = emptyData();
+
+  function emptyData(){
+    var d = {};
+    POOLS.forEach(function(p){ d[p] = new Array(SLOTS_PER_POOL).fill(''); });
+    return d;
+  }
+
+  function showStatus(msg, isError){
+    statusEl.style.display = 'block';
+    statusEl.textContent = msg;
+    statusEl.style.color = isError ? '#c0392b' : 'rgba(11,32,39,0.5)';
+    setTimeout(function(){ statusEl.style.display = 'none'; }, 3000);
+  }
+
+  function render(){
+    grid.innerHTML = '';
+    POOLS.forEach(function(pool){
+      var card = document.createElement('div');
+      card.className = 'pool-card';
+
+      var h3 = document.createElement('h3');
+      h3.innerHTML = '<span class="pnum">' + pool + '</span> Pool ' + pool;
+      card.appendChild(h3);
+
+      for(var i=0; i<SLOTS_PER_POOL; i++){
+        var slot = document.createElement('div');
+        slot.className = 'team-slot';
+
+        var idx = document.createElement('span');
+        idx.className = 'slot-idx';
+        idx.textContent = (i+1) + '.';
+        slot.appendChild(idx);
+
+        var val = (teamsData[pool] && teamsData[pool][i]) ? teamsData[pool][i] : '';
+
+        if(isAdmin){
+          var input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = 'Team name';
+          input.value = val;
+          input.dataset.pool = pool;
+          input.dataset.idx = i;
+          slot.appendChild(input);
+        } else {
+          var nameEl = document.createElement('span');
+          nameEl.className = 'slot-name' + (val ? '' : ' tbd');
+          nameEl.textContent = val ? val : 'TBD';
+          slot.appendChild(nameEl);
+        }
+
+        card.appendChild(slot);
+      }
+      grid.appendChild(card);
+    });
+  }
+
+  async function loadTeams(){
+    try{
+      var result = await window.storage.get(STORAGE_KEY, true);
+      if(result && result.value){
+        var parsed = JSON.parse(result.value);
+        POOLS.forEach(function(p){
+          if(parsed[p]) teamsData[p] = parsed[p];
+        });
+      }
+    }catch(e){
+      // no data saved yet, keep empty defaults
+    }
+    render();
+  }
+
+  async function saveTeams(){
+    // collect current input values into teamsData
+    var inputs = grid.querySelectorAll('input');
+    inputs.forEach(function(inp){
+      teamsData[inp.dataset.pool][inp.dataset.idx] = inp.value.trim();
+    });
+    try{
+      var result = await window.storage.set(STORAGE_KEY, JSON.stringify(teamsData), true);
+      if(result){
+        showStatus('Saved — visible to everyone viewing this page.', false);
+      } else {
+        showStatus('Save failed, please try again.', true);
+      }
+    }catch(e){
+      showStatus('Save failed: ' + e.message, true);
+    }
+  }
+
+  adminToggle.addEventListener('click', function(){
+    var code = prompt('Enter organizer code to edit teams:');
+    if(code === null) return;
+    if(code === ORGANIZER_CODE){
+      isAdmin = true;
+      adminBar.style.display = 'flex';
+      adminToggle.style.display = 'none';
+      render();
+    } else {
+      alert('Incorrect code.');
+    }
+  });
+
+  adminExit.addEventListener('click', function(){
+    isAdmin = false;
+    adminBar.style.display = 'none';
+    adminToggle.style.display = 'inline-block';
+    render();
+  });
+
+  saveBtn.addEventListener('click', saveTeams);
+
+  loadTeams();
+})();
+</script>
+</body>
+</html>
