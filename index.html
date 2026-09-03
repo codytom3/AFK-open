@@ -194,6 +194,34 @@
   .ps-court{color:rgba(11,30,51,0.4); font-size:0.75rem;}
   .ps-bye{color:rgba(11,30,51,0.4); font-size:0.75rem; font-style:italic; display:block; margin-top:2px;}
 
+  /* BRACKET */
+  .bracket-rounds{display:flex; gap:20px; overflow-x:auto; padding-bottom:12px;}
+  .bracket-round{flex:0 0 220px; display:flex; flex-direction:column; gap:14px;}
+  .bracket-round-title{
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-transform:uppercase;
+    letter-spacing:0.08em; color:var(--coral); margin-bottom:4px;
+  }
+  .bracket-match{
+    border:1.5px solid var(--line); border-radius:10px; background:#fff; overflow:hidden;
+  }
+  .bracket-slot{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:10px 12px; font-size:0.85rem; border-bottom:1px solid var(--line);
+  }
+  .bracket-slot:last-child{border-bottom:none;}
+  .bracket-slot .seed-num{
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:rgba(11,30,51,0.4);
+    flex:0 0 auto; width:18px;
+  }
+  .bracket-slot .team-name{flex:1; color:var(--ink);}
+  .bracket-slot .team-name.tbd{color:rgba(11,30,51,0.35); font-style:italic;}
+  .bracket-slot input{
+    flex:1; border:1.5px solid var(--ink); border-radius:6px; padding:5px 8px;
+    font-family:'Nunito',sans-serif; font-size:0.82rem; background:var(--cream); color:var(--ink); min-width:0;
+  }
+  .bracket-slot input:focus{outline:none; border-color:var(--coral);}
+  .bracket-final .bracket-match{border-color:var(--optic); border-width:2px;}
+
   .schedule{background:var(--ink); color:var(--cream);}
   .schedule .section-head h2{color:var(--cream);}
   .schedule .tag{color:var(--optic);}
@@ -301,10 +329,10 @@
     <div class="navlinks">
       <a href="#mission">Mission</a>
       <a href="#teams">Teams</a>
+      <a href="#bracket">Bracket</a>
       <a href="#schedule">Schedule</a>
       <a href="#rules">Rules</a>
       <a href="#sponsors">Sponsors</a>
-      <a href="#register">Bracket</a>
     </div>
     <a href="#register" class="btn btn-solid">Register</a>
   </div>
@@ -386,6 +414,33 @@
 
 <div class="kitchen-line"></div>
 
+<section id="bracket">
+  <div class="wrap">
+    <div class="section-head" style="justify-content:space-between; width:100%;">
+      <div style="display:flex; align-items:baseline; gap:16px;">
+        <span class="tag">Seeded 1–10</span>
+        <h2>Championship Bracket</h2>
+      </div>
+      <button id="bracket-admin-toggle" class="btn btn-ghost" style="border-color:var(--ink); font-size:0.75rem; padding:8px 16px;">Organizer sign-in</button>
+    </div>
+
+    <div id="bracket-admin-bar" class="admin-bar" style="display:none;">
+      <span class="mono admin-note">Organizer mode — enter each seed's team once pool play determines standings.</span>
+      <div style="display:flex; gap:10px;">
+        <button id="bracket-save" class="btn btn-solid" style="font-size:0.78rem; padding:9px 18px;">Save changes</button>
+        <button id="bracket-admin-exit" class="btn btn-ghost" style="border-color:var(--ink); font-size:0.78rem; padding:9px 18px;">Exit</button>
+      </div>
+    </div>
+    <div id="bracket-status" class="mono" style="font-size:0.78rem; color:rgba(11,30,51,0.5); margin-bottom:18px; display:none;"></div>
+
+    <p style="font-size:0.9rem; color:rgba(11,30,51,0.6); margin-bottom:28px; max-width:560px;">Seeds 1–6 get a first-round bye. Seeds 7–10 play two play-in matches; the winners join the bye teams in the quarterfinals.</p>
+
+    <div id="bracket-display" class="bracket-rounds"></div>
+  </div>
+</section>
+
+<div class="kitchen-line"></div>
+
 <section id="schedule" class="schedule">
   <div class="wrap">
     <div class="section-head">
@@ -411,7 +466,7 @@
       </div>
       <div class="t-row">
         <div class="t-time">3:30 PM</div>
-        <div><div class="t-name">Championship Bracket</div><div class="t-desc">The winner of each pool advances. The top 4 by point differential enter a single-elimination bracket — semifinals on two courts, then the championship final.</div></div>
+        <div><div class="t-name">Championship Bracket</div><div class="t-desc">Top 2 teams from each pool (10 total) enter a seeded single-elimination bracket — play-in matches, quarterfinals, semifinals, and the championship final.</div></div>
         <div class="t-badge">Knockout</div>
       </div>
       <div class="t-row">
@@ -440,12 +495,12 @@
       <div class="rule-card">
         <div class="rn">RULE 02</div>
         <h3>Seeding</h3>
-        <p>The winner of each pool advances. The 4 pool winners with the best point differential move on to the bracket, seeded 1–4; the 5th-place pool winner does not advance.</p>
+        <p>The top 2 finishers from each pool advance — 10 teams total — seeded 1–10 by pool finish and point differential.</p>
       </div>
       <div class="rule-card">
         <div class="rn">RULE 03</div>
         <h3>Championship bracket</h3>
-        <p>4-team single elimination: semifinals on two courts, then the championship final. Single game to 9, win by 1, to keep the bracket on schedule.</p>
+        <p>Seeds 1–6 receive a first-round bye. Seeds 7–10 play two play-in matches; winners join the byed teams in the quarterfinals, followed by semifinals and the final. See the full bracket below.</p>
       </div>
       <div class="rule-card">
         <div class="rn">RULE 04</div>
@@ -790,6 +845,184 @@
   saveBtn.addEventListener('click', saveTeams);
 
   loadTeams();
+
+  // ===== CHAMPIONSHIP BRACKET =====
+  var BRACKET_KEY = 'afk-open-bracket-seeds';
+  var bracketSeeds = new Array(10).fill('');
+  var bracketIsAdmin = false;
+
+  var bracketDisplay = document.getElementById('bracket-display');
+  var bracketAdminToggle = document.getElementById('bracket-admin-toggle');
+  var bracketAdminBar = document.getElementById('bracket-admin-bar');
+  var bracketAdminExit = document.getElementById('bracket-admin-exit');
+  var bracketSaveBtn = document.getElementById('bracket-save');
+  var bracketStatusEl = document.getElementById('bracket-status');
+
+  function seedLabel(i){
+    var v = bracketSeeds[i] ? bracketSeeds[i] : '';
+    return v ? v : ('Seed ' + (i+1));
+  }
+
+  function showBracketStatus(msg, isError){
+    bracketStatusEl.style.display = 'block';
+    bracketStatusEl.textContent = msg;
+    bracketStatusEl.style.color = isError ? '#c0392b' : 'rgba(11,30,51,0.5)';
+    setTimeout(function(){ bracketStatusEl.style.display = 'none'; }, 3000);
+  }
+
+  function bracketSlot(seedIndex, fallbackText){
+    var slot = document.createElement('div');
+    slot.className = 'bracket-slot';
+
+    if(seedIndex !== null){
+      var num = document.createElement('span');
+      num.className = 'seed-num';
+      num.textContent = (seedIndex+1);
+      slot.appendChild(num);
+
+      if(bracketIsAdmin){
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Team name';
+        input.value = bracketSeeds[seedIndex];
+        input.dataset.seed = seedIndex;
+        slot.appendChild(input);
+      } else {
+        var nameEl = document.createElement('span');
+        var val = bracketSeeds[seedIndex];
+        nameEl.className = 'team-name' + (val ? '' : ' tbd');
+        nameEl.textContent = val ? val : ('Seed ' + (seedIndex+1) + ' (TBD)');
+        slot.appendChild(nameEl);
+      }
+    } else {
+      var placeholder = document.createElement('span');
+      placeholder.className = 'team-name tbd';
+      placeholder.textContent = fallbackText;
+      slot.appendChild(placeholder);
+    }
+    return slot;
+  }
+
+  function bracketMatch(seedA, seedB, fallbackA, fallbackB){
+    var match = document.createElement('div');
+    match.className = 'bracket-match';
+    match.appendChild(bracketSlot(seedA, fallbackA));
+    match.appendChild(bracketSlot(seedB, fallbackB));
+    return match;
+  }
+
+  function renderBracket(){
+    bracketDisplay.innerHTML = '';
+
+    // Round 1: Play-In (seeds 7-10)
+    var r1 = document.createElement('div');
+    r1.className = 'bracket-round';
+    r1.innerHTML = '<div class="bracket-round-title">Play-In</div>';
+    r1.appendChild(bracketMatch(6, 9, null, null)); // Seed 7 vs Seed 10
+    r1.appendChild(bracketMatch(7, 8, null, null)); // Seed 8 vs Seed 9
+    bracketDisplay.appendChild(r1);
+
+    // Round 2: Quarterfinals (seeds 1-6 bye + play-in winners)
+    var r2 = document.createElement('div');
+    r2.className = 'bracket-round';
+    r2.innerHTML = '<div class="bracket-round-title">Quarterfinals</div>';
+    var qf1 = document.createElement('div');
+    qf1.className = 'bracket-match';
+    qf1.appendChild(bracketSlot(0, null)); // Seed 1
+    qf1.appendChild(bracketSlot(null, 'Winner: ' + seedLabel(7) + ' vs ' + seedLabel(8)));
+    r2.appendChild(qf1);
+    r2.appendChild(bracketMatch(3, 4, null, null)); // Seed 4 vs Seed 5
+    r2.appendChild(bracketMatch(2, 5, null, null)); // Seed 3 vs Seed 6
+    var qf4 = document.createElement('div');
+    qf4.className = 'bracket-match';
+    qf4.appendChild(bracketSlot(1, null)); // Seed 2
+    qf4.appendChild(bracketSlot(null, 'Winner: ' + seedLabel(6) + ' vs ' + seedLabel(9)));
+    r2.appendChild(qf4);
+    bracketDisplay.appendChild(r2);
+
+    // Round 3: Semifinals
+    var r3 = document.createElement('div');
+    r3.className = 'bracket-round';
+    r3.innerHTML = '<div class="bracket-round-title">Semifinals</div>';
+    var sf1 = document.createElement('div');
+    sf1.className = 'bracket-match';
+    sf1.appendChild(bracketSlot(null, 'Winner: QF1'));
+    sf1.appendChild(bracketSlot(null, 'Winner: QF2'));
+    r3.appendChild(sf1);
+    var sf2 = document.createElement('div');
+    sf2.className = 'bracket-match';
+    sf2.appendChild(bracketSlot(null, 'Winner: QF3'));
+    sf2.appendChild(bracketSlot(null, 'Winner: QF4'));
+    r3.appendChild(sf2);
+    bracketDisplay.appendChild(r3);
+
+    // Round 4: Championship
+    var r4 = document.createElement('div');
+    r4.className = 'bracket-round bracket-final';
+    r4.innerHTML = '<div class="bracket-round-title">Championship</div>';
+    var final = document.createElement('div');
+    final.className = 'bracket-match';
+    final.appendChild(bracketSlot(null, 'Winner: SF1'));
+    final.appendChild(bracketSlot(null, 'Winner: SF2'));
+    r4.appendChild(final);
+    bracketDisplay.appendChild(r4);
+  }
+
+  async function loadBracket(){
+    try{
+      var result = await window.storage.get(BRACKET_KEY, true);
+      if(result && result.value){
+        var parsed = JSON.parse(result.value);
+        if(Array.isArray(parsed) && parsed.length === 10){
+          bracketSeeds = parsed;
+        }
+      }
+    }catch(e){
+      // no data saved yet, keep empty defaults
+    }
+    renderBracket();
+  }
+
+  async function saveBracket(){
+    var inputs = bracketDisplay.querySelectorAll('input');
+    inputs.forEach(function(inp){
+      bracketSeeds[inp.dataset.seed] = inp.value.trim();
+    });
+    try{
+      var result = await window.storage.set(BRACKET_KEY, JSON.stringify(bracketSeeds), true);
+      if(result){
+        showBracketStatus('Saved — visible to everyone viewing this page.', false);
+      } else {
+        showBracketStatus('Save failed, please try again.', true);
+      }
+    }catch(e){
+      showBracketStatus('Save failed: ' + e.message, true);
+    }
+  }
+
+  bracketAdminToggle.addEventListener('click', function(){
+    var code = prompt('Enter organizer code to edit bracket seeds:');
+    if(code === null) return;
+    if(code === ORGANIZER_CODE){
+      bracketIsAdmin = true;
+      bracketAdminBar.style.display = 'flex';
+      bracketAdminToggle.style.display = 'none';
+      renderBracket();
+    } else {
+      alert('Incorrect code.');
+    }
+  });
+
+  bracketAdminExit.addEventListener('click', function(){
+    bracketIsAdmin = false;
+    bracketAdminBar.style.display = 'none';
+    bracketAdminToggle.style.display = 'inline-block';
+    renderBracket();
+  });
+
+  bracketSaveBtn.addEventListener('click', saveBracket);
+
+  loadBracket();
 })();
 </script>
 </body>
