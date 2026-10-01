@@ -657,15 +657,6 @@
     ]}
   ];
 
-  var grid = document.getElementById('pools-grid');
-  var adminToggle = document.getElementById('admin-toggle');
-  var adminBar = document.getElementById('admin-bar');
-  var adminExit = document.getElementById('admin-exit');
-  var saveBtn = document.getElementById('teams-save');
-  var statusEl = document.getElementById('teams-status');
-  var isAdmin = false;
-  var teamsData = emptyData();
-
   // Default roster — shown until an organizer signs in and saves changes.
   // Two slots (Pool A #4 and Pool E #4) are left blank for the 2 teams still TBD.
   var DEFAULT_TEAMS = {
@@ -683,6 +674,15 @@
     });
     return d;
   }
+
+  var grid = document.getElementById('pools-grid');
+  var adminToggle = document.getElementById('admin-toggle');
+  var adminBar = document.getElementById('admin-bar');
+  var adminExit = document.getElementById('admin-exit');
+  var saveBtn = document.getElementById('teams-save');
+  var statusEl = document.getElementById('teams-status');
+  var isAdmin = false;
+  var teamsData = emptyData();
 
   function showStatus(msg, isError){
     statusEl.style.display = 'block';
