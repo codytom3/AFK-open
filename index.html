@@ -487,11 +487,11 @@
       </div>
       <div class="t-row">
         <div class="t-time">1:15 PM</div>
-        <div><div class="t-name">Pool Play Begins</div><div class="t-desc">All 4 pools share all 6 courts on a rotating schedule — every team plays every team in its pool. Games to 11, win by 2.</div></div>
+        <div><div class="t-name">Pool Play Begins</div><div class="t-desc">All 4 pools share all 4 courts on a rotating schedule — every team plays every team in its pool. Games to 11, win by 2.</div></div>
         <div class="t-badge">Pool Play</div>
       </div>
       <div class="t-row">
-        <div class="t-time">3:00 PM</div>
+        <div class="t-time">3:15 PM</div>
         <div><div class="t-name">Championship Bracket</div><div class="t-desc">Top 2 teams from each pool (8 total) enter a clean single-elimination bracket — quarterfinals, semifinals, and the championship final.</div></div>
         <div class="t-badge">Knockout</div>
       </div>
@@ -516,7 +516,7 @@
       <div class="rule-card">
         <div class="rn">RULE 01</div>
         <h3>Pool play</h3>
-        <p>18 teams split into 4 pools — two pools of 4 and two pools of 5. Round robin within each pool — every team plays every other team in its pool, sharing all 6 courts on a rotating schedule. Games to 11, win by 2.</p>
+        <p>18 teams split into 4 pools — two pools of 4 and two pools of 5. Round robin within each pool — every team plays every other team in its pool, sharing all 4 courts on a rotating schedule. Games to 11, win by 2.</p>
       </div>
       <div class="rule-card">
         <div class="rn">RULE 02</div>
@@ -652,37 +652,42 @@
     return true;
   }
 
-  // Master pool-play schedule: 6 time slots sharing all 6 courts across
-  // 2 pools of 4 (A, B) and 2 pools of 5 (C, D). Each pool plays a full
-  // round robin. Team indices are 0-based within each pool (0-3 for A/B, 0-4 for C/D).
+  // Master pool-play schedule: 8 time slots sharing all 4 courts.
+  // Pools C & D (5 teams each) share the 4 courts for slots 1-5;
+  // pools A & B (4 teams each) share the 4 courts for slots 6-8.
+  // Each pool plays a full round robin. Team indices are 0-based (0-3 for A/B, 0-4 for C/D).
   var MASTER_SCHEDULE = [
     {time:'1:15 PM', matches:[
-      {pool:'D', court:1, pair:[1,4]}, {pool:'D', court:2, pair:[2,3]},
-      {pool:'A', court:3, pair:[0,1]}, {pool:'A', court:4, pair:[2,3]},
-      {pool:'B', court:5, pair:[0,1]}, {pool:'B', court:6, pair:[2,3]}
+      {pool:'C', court:1, pair:[1,4]}, {pool:'C', court:2, pair:[2,3]},
+      {pool:'D', court:3, pair:[1,4]}, {pool:'D', court:4, pair:[2,3]}
     ]},
     {time:'1:30 PM', matches:[
-      {pool:'C', court:1, pair:[1,4]}, {pool:'C', court:2, pair:[2,3]},
-      {pool:'A', court:3, pair:[0,2]}, {pool:'A', court:4, pair:[1,3]},
-      {pool:'B', court:5, pair:[0,2]}, {pool:'B', court:6, pair:[1,3]}
+      {pool:'C', court:1, pair:[0,4]}, {pool:'C', court:2, pair:[1,2]},
+      {pool:'D', court:3, pair:[0,4]}, {pool:'D', court:4, pair:[1,2]}
     ]},
     {time:'1:45 PM', matches:[
-      {pool:'C', court:1, pair:[0,4]}, {pool:'C', court:2, pair:[1,2]},
-      {pool:'D', court:3, pair:[0,4]}, {pool:'D', court:4, pair:[1,2]},
-      {pool:'A', court:5, pair:[0,3]}, {pool:'A', court:6, pair:[1,2]}
+      {pool:'C', court:1, pair:[0,3]}, {pool:'C', court:2, pair:[2,4]},
+      {pool:'D', court:3, pair:[0,3]}, {pool:'D', court:4, pair:[2,4]}
     ]},
     {time:'2:00 PM', matches:[
-      {pool:'C', court:1, pair:[0,3]}, {pool:'C', court:2, pair:[2,4]},
-      {pool:'D', court:3, pair:[0,3]}, {pool:'D', court:4, pair:[2,4]},
-      {pool:'B', court:5, pair:[0,3]}, {pool:'B', court:6, pair:[1,2]}
-    ]},
-    {time:'2:15 PM', matches:[
       {pool:'C', court:1, pair:[0,2]}, {pool:'C', court:2, pair:[1,3]},
       {pool:'D', court:3, pair:[0,2]}, {pool:'D', court:4, pair:[1,3]}
     ]},
-    {time:'2:30 PM', matches:[
+    {time:'2:15 PM', matches:[
       {pool:'C', court:1, pair:[0,1]}, {pool:'C', court:2, pair:[3,4]},
       {pool:'D', court:3, pair:[0,1]}, {pool:'D', court:4, pair:[3,4]}
+    ]},
+    {time:'2:30 PM', matches:[
+      {pool:'A', court:1, pair:[0,1]}, {pool:'A', court:2, pair:[2,3]},
+      {pool:'B', court:3, pair:[0,1]}, {pool:'B', court:4, pair:[2,3]}
+    ]},
+    {time:'2:45 PM', matches:[
+      {pool:'A', court:1, pair:[0,2]}, {pool:'A', court:2, pair:[1,3]},
+      {pool:'B', court:3, pair:[0,2]}, {pool:'B', court:4, pair:[1,3]}
+    ]},
+    {time:'3:00 PM', matches:[
+      {pool:'A', court:1, pair:[0,3]}, {pool:'A', court:2, pair:[1,2]},
+      {pool:'B', court:3, pair:[0,3]}, {pool:'B', court:4, pair:[1,2]}
     ]}
   ];
 
@@ -919,9 +924,10 @@
     if(!table) return;
     var html = '';
 
+    var NUM_COURTS = 4;
     html += '<thead><tr style="background:var(--ink); color:var(--cream);">';
     html += '<th style="padding:10px 12px; text-align:left; font-family:\'IBM Plex Mono\',monospace; font-size:0.72rem; text-transform:uppercase;">Time</th>';
-    for(var c=1; c<=6; c++){
+    for(var c=1; c<=NUM_COURTS; c++){
       html += '<th style="padding:10px 12px; text-align:left; font-family:\'IBM Plex Mono\',monospace; font-size:0.72rem; text-transform:uppercase;">Court ' + c + '</th>';
     }
     html += '</tr></thead><tbody>';
@@ -934,7 +940,7 @@
       var bg = rowIdx % 2 === 0 ? '#fff' : 'rgba(11,30,51,0.03)';
       html += '<tr style="background:' + bg + ';">';
       html += '<td style="padding:9px 12px; border-bottom:1px solid var(--line); font-family:\'IBM Plex Mono\',monospace; color:var(--coral); font-weight:600; white-space:nowrap;">' + slotData.time + '</td>';
-      for(var c=1; c<=6; c++){
+      for(var c=1; c<=NUM_COURTS; c++){
         var cell = courtMap[c] ? courtMap[c] : '<span style="color:rgba(11,30,51,0.3); font-style:italic;">—</span>';
         html += '<td style="padding:9px 12px; border-bottom:1px solid var(--line); white-space:nowrap;">' + cell + '</td>';
       }
