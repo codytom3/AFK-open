@@ -193,6 +193,31 @@
   .ps-match{display:block;}
   .ps-court{color:rgba(11,30,51,0.4); font-size:0.75rem;}
   .ps-bye{color:rgba(11,30,51,0.4); font-size:0.75rem; font-style:italic; display:block; margin-top:2px;}
+  .ps-score-inputs{display:inline-flex; align-items:center; gap:4px; margin-left:8px;}
+  .score-input{
+    width:38px; padding:3px 4px; border:1px solid var(--line); border-radius:4px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.8rem; text-align:center; background:#fff;
+  }
+  .score-input:focus{outline:none; border-color:var(--coral);}
+  .ps-score-dash{color:rgba(11,30,51,0.4); font-size:0.75rem;}
+  .ps-score-final{
+    margin-left:8px; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:0.82rem; color:var(--teal);
+  }
+
+  .pool-standings{margin-top:16px; padding-top:14px; border-top:1px solid var(--line);}
+  .pool-standings .ps-label{
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem; text-transform:uppercase;
+    letter-spacing:0.08em; color:rgba(11,30,51,0.45); margin-bottom:10px;
+  }
+  .standings-table{width:100%; border-collapse:collapse; font-size:0.8rem;}
+  .standings-table th{
+    text-align:left; padding:5px 6px; font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    text-transform:uppercase; color:rgba(11,30,51,0.45); border-bottom:1px solid var(--line);
+  }
+  .standings-table td{padding:5px 6px; border-bottom:1px dashed var(--line);}
+  .standings-table tr:last-child td{border-bottom:none;}
+  .standings-table tr.advancing td{font-weight:700; color:var(--teal);}
+  .standings-table tr.advancing td:first-child{color:var(--coral);}
 
   /* BRACKET */
   .bracket-rounds{display:flex; gap:20px; overflow-x:auto; padding-bottom:12px;}
@@ -425,8 +450,9 @@
     </div>
 
     <div id="bracket-admin-bar" class="admin-bar" style="display:none;">
-      <span class="mono admin-note">Organizer mode — enter each seed's team once pool play determines standings.</span>
-      <div style="display:flex; gap:10px;">
+      <span class="mono admin-note">Organizer mode — enter each seed's team, or auto-fill from pool standings, then save.</span>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="bracket-autofill" class="btn btn-ghost" style="border-color:var(--ink); font-size:0.78rem; padding:9px 18px;">Auto-fill from standings</button>
         <button id="bracket-save" class="btn btn-solid" style="font-size:0.78rem; padding:9px 18px;">Save changes</button>
         <button id="bracket-admin-exit" class="btn btn-ghost" style="border-color:var(--ink); font-size:0.78rem; padding:9px 18px;">Exit</button>
       </div>
@@ -686,11 +712,54 @@
   var isAdmin = false;
   var teamsData = emptyData();
 
+  // Scores: keyed by "<pool>_<lowIdx>-<highIdx>" (each pair plays exactly once per pool,
+  // so this uniquely identifies a match regardless of time slot/court).
+  var scoresData = {};
+  function matchKey(pool, pair){
+    return pool + '_' + pair.slice().sort(function(a,b){return a-b;}).join('-');
+  }
+
   function showStatus(msg, isError){
     statusEl.style.display = 'block';
     statusEl.textContent = msg;
     statusEl.style.color = isError ? '#c0392b' : 'rgba(11,30,51,0.5)';
     setTimeout(function(){ statusEl.style.display = 'none'; }, 3000);
+  }
+
+  // Standings for a pool: wins desc, then point differential desc, then points-for desc.
+  function computeStandings(pool){
+    var n = POOL_SIZE[pool];
+    var rows = [];
+    for(var i=0; i<n; i++){
+      rows.push({idx:i, label:(teamsData[pool] && teamsData[pool][i]) ? teamsData[pool][i] : ('Team '+(i+1)), wins:0, losses:0, pf:0, pa:0, played:0});
+    }
+    MASTER_SCHEDULE.forEach(function(slotData){
+      slotData.matches.forEach(function(m){
+        if(m.pool !== pool) return;
+        var key = matchKey(pool, m.pair);
+        var sc = scoresData[key];
+        if(!sc || sc.a === '' || sc.b === '' || sc.a == null || sc.b == null) return;
+        var a = Number(sc.a), b = Number(sc.b);
+        if(isNaN(a) || isNaN(b)) return;
+        var t1 = rows[m.pair[0]], t2 = rows[m.pair[1]];
+        t1.pf += a; t1.pa += b; t1.played++;
+        t2.pf += b; t2.pa += a; t2.played++;
+        if(a > b){ t1.wins++; t2.losses++; }
+        else if(b > a){ t2.wins++; t1.losses++; }
+      });
+    });
+    rows.forEach(function(r){ r.diff = r.pf - r.pa; });
+    rows.sort(function(x,y){
+      if(y.wins !== x.wins) return y.wins - x.wins;
+      if(y.diff !== x.diff) return y.diff - x.diff;
+      return y.pf - x.pf;
+    });
+    return rows;
+  }
+
+  function totalMatchesInPool(pool){
+    var n = POOL_SIZE[pool];
+    return n*(n-1)/2;
   }
 
   function render(){
@@ -765,12 +834,80 @@
           m1.innerHTML = teamLabel(m.pair[0]) + ' vs ' + teamLabel(m.pair[1]) + ' <span class="ps-court">· Court ' + m.court + '</span>';
           matchesEl.appendChild(m1);
 
+          var key = matchKey(pool, m.pair);
+          var sc = scoresData[key] || {};
+
+          if(isAdmin){
+            var scoreWrap = document.createElement('span');
+            scoreWrap.className = 'ps-score-inputs';
+            var inA = document.createElement('input');
+            inA.type = 'number';
+            inA.min = '0';
+            inA.placeholder = '0';
+            inA.className = 'score-input';
+            inA.value = (sc.a !== undefined && sc.a !== null) ? sc.a : '';
+            inA.dataset.scoreKey = key;
+            inA.dataset.side = 'a';
+            var vs = document.createElement('span');
+            vs.className = 'ps-score-dash';
+            vs.textContent = '–';
+            var inB = document.createElement('input');
+            inB.type = 'number';
+            inB.min = '0';
+            inB.placeholder = '0';
+            inB.className = 'score-input';
+            inB.value = (sc.b !== undefined && sc.b !== null) ? sc.b : '';
+            inB.dataset.scoreKey = key;
+            inB.dataset.side = 'b';
+            scoreWrap.appendChild(inA);
+            scoreWrap.appendChild(vs);
+            scoreWrap.appendChild(inB);
+            matchesEl.appendChild(scoreWrap);
+          } else if(sc.a !== undefined && sc.a !== null && sc.a !== '' && sc.b !== undefined && sc.b !== null && sc.b !== ''){
+            var scoreEl = document.createElement('span');
+            scoreEl.className = 'ps-score-final';
+            scoreEl.textContent = sc.a + '–' + sc.b;
+            matchesEl.appendChild(scoreEl);
+          }
+
           row.appendChild(matchesEl);
           sched.appendChild(row);
         });
       });
 
       card.appendChild(sched);
+
+      // Standings — live-computed from whatever scores have been entered so far.
+      var standWrap = document.createElement('div');
+      standWrap.className = 'pool-standings';
+      var standLabel = document.createElement('div');
+      standLabel.className = 'ps-label';
+      var playedCount = 0;
+      MASTER_SCHEDULE.forEach(function(slotData){
+        slotData.matches.forEach(function(m){
+          if(m.pool !== pool) return;
+          var k = matchKey(pool, m.pair);
+          var s = scoresData[k];
+          if(s && s.a !== '' && s.a != null && s.b !== '' && s.b != null) playedCount++;
+        });
+      });
+      standLabel.textContent = 'Standings (' + playedCount + ' of ' + totalMatchesInPool(pool) + ' matches scored)';
+      standWrap.appendChild(standLabel);
+
+      var standings = computeStandings(pool);
+      var standTable = document.createElement('table');
+      standTable.className = 'standings-table';
+      var thead = '<thead><tr><th>#</th><th>Team</th><th>W-L</th><th>Diff</th></tr></thead>';
+      var tbody = '<tbody>';
+      standings.forEach(function(r, rank){
+        var advancing = rank < 2 ? ' class="advancing"' : '';
+        tbody += '<tr' + advancing + '><td>' + (rank+1) + '</td><td>' + r.label + '</td><td>' + r.wins + '-' + r.losses + '</td><td>' + (r.diff > 0 ? '+' : '') + r.diff + '</td></tr>';
+      });
+      tbody += '</tbody>';
+      standTable.innerHTML = thead + tbody;
+      standWrap.appendChild(standTable);
+      card.appendChild(standWrap);
+
       grid.appendChild(card);
     });
 
@@ -821,6 +958,9 @@
           if(shared.teams[p]) teamsData[p] = shared.teams[p];
         });
       }
+      if(shared && shared.scores){
+        scoresData = shared.scores;
+      }
     }catch(e){
       // couldn't reach shared store yet, keep defaults
     }
@@ -828,18 +968,27 @@
   }
 
   async function saveTeams(){
-    // collect current input values into teamsData
-    var inputs = grid.querySelectorAll('input');
-    inputs.forEach(function(inp){
+    // collect current team-name input values into teamsData
+    var nameInputs = grid.querySelectorAll('input[data-pool]');
+    nameInputs.forEach(function(inp){
       teamsData[inp.dataset.pool][inp.dataset.idx] = inp.value.trim();
+    });
+    // collect current score input values into scoresData
+    var scoreInputs = grid.querySelectorAll('input[data-score-key]');
+    scoreInputs.forEach(function(inp){
+      var key = inp.dataset.scoreKey;
+      if(!scoresData[key]) scoresData[key] = {a:'', b:''};
+      scoresData[key][inp.dataset.side] = inp.value.trim();
     });
     try{
       var shared = {};
       try{ shared = await fetchShared(); }catch(e){}
       shared.teams = teamsData;
+      shared.scores = scoresData;
       if(!shared.bracketSeeds) shared.bracketSeeds = bracketSeeds;
       await writeShared(shared);
       showStatus('Saved — visible to everyone viewing this page.', false);
+      render();
     }catch(e){
       showStatus('Save failed: ' + e.message, true);
     }
@@ -878,7 +1027,37 @@
   var bracketAdminBar = document.getElementById('bracket-admin-bar');
   var bracketAdminExit = document.getElementById('bracket-admin-exit');
   var bracketSaveBtn = document.getElementById('bracket-save');
+  var bracketAutofillBtn = document.getElementById('bracket-autofill');
   var bracketStatusEl = document.getElementById('bracket-status');
+
+  // Seeds 1-4: each pool's 1st-place finisher, ranked against each other by record/diff.
+  // Seeds 5-8: each pool's 2nd-place finisher, ranked the same way.
+  function autofillBracketFromStandings(){
+    var firsts = [], seconds = [];
+    var incomplete = [];
+    POOLS.forEach(function(pool){
+      var standings = computeStandings(pool);
+      var playedTotal = standings.reduce(function(sum,r){ return sum + r.played; }, 0) / 2;
+      if(playedTotal < totalMatchesInPool(pool)) incomplete.push(pool);
+      firsts.push(standings[0]);
+      seconds.push(standings[1]);
+    });
+    function byRecord(a,b){
+      if(b.wins !== a.wins) return b.wins - a.wins;
+      if(b.diff !== a.diff) return b.diff - a.diff;
+      return b.pf - a.pf;
+    }
+    firsts.sort(byRecord);
+    seconds.sort(byRecord);
+    var newSeeds = firsts.concat(seconds).map(function(r){ return r.label; });
+    if(incomplete.length){
+      var proceed = confirm('Heads up: pool(s) ' + incomplete.join(', ') + ' still have unscored matches. Auto-fill anyway using current standings?');
+      if(!proceed) return;
+    }
+    bracketSeeds = newSeeds;
+    renderBracket();
+    showBracketStatus('Filled from standings — review, then click Save changes.', false);
+  }
 
   function seedLabel(i){
     var v = bracketSeeds[i] ? bracketSeeds[i] : '';
@@ -1024,6 +1203,7 @@
   });
 
   bracketSaveBtn.addEventListener('click', saveBracket);
+  bracketAutofillBtn.addEventListener('click', autofillBracketFromStandings);
 
   loadBracket();
 })();
