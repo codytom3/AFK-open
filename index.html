@@ -812,7 +812,7 @@
 
       var schedLabel = document.createElement('div');
       schedLabel.className = 'ps-label';
-      schedLabel.textContent = 'Match Schedule';
+      schedLabel.textContent = 'Match Schedule — enter scores as matches finish, open to everyone';
       sched.appendChild(schedLabel);
 
       MASTER_SCHEDULE.forEach(function(slotData){
@@ -834,41 +834,36 @@
           m1.innerHTML = teamLabel(m.pair[0]) + ' vs ' + teamLabel(m.pair[1]) + ' <span class="ps-court">· Court ' + m.court + '</span>';
           matchesEl.appendChild(m1);
 
+          // Scores are open to everyone (honor system) — no sign-in needed to enter a result.
           var key = matchKey(pool, m.pair);
           var sc = scoresData[key] || {};
-
-          if(isAdmin){
-            var scoreWrap = document.createElement('span');
-            scoreWrap.className = 'ps-score-inputs';
-            var inA = document.createElement('input');
-            inA.type = 'number';
-            inA.min = '0';
-            inA.placeholder = '0';
-            inA.className = 'score-input';
-            inA.value = (sc.a !== undefined && sc.a !== null) ? sc.a : '';
-            inA.dataset.scoreKey = key;
-            inA.dataset.side = 'a';
-            var vs = document.createElement('span');
-            vs.className = 'ps-score-dash';
-            vs.textContent = '–';
-            var inB = document.createElement('input');
-            inB.type = 'number';
-            inB.min = '0';
-            inB.placeholder = '0';
-            inB.className = 'score-input';
-            inB.value = (sc.b !== undefined && sc.b !== null) ? sc.b : '';
-            inB.dataset.scoreKey = key;
-            inB.dataset.side = 'b';
-            scoreWrap.appendChild(inA);
-            scoreWrap.appendChild(vs);
-            scoreWrap.appendChild(inB);
-            matchesEl.appendChild(scoreWrap);
-          } else if(sc.a !== undefined && sc.a !== null && sc.a !== '' && sc.b !== undefined && sc.b !== null && sc.b !== ''){
-            var scoreEl = document.createElement('span');
-            scoreEl.className = 'ps-score-final';
-            scoreEl.textContent = sc.a + '–' + sc.b;
-            matchesEl.appendChild(scoreEl);
-          }
+          var scoreWrap = document.createElement('span');
+          scoreWrap.className = 'ps-score-inputs';
+          var inA = document.createElement('input');
+          inA.type = 'number';
+          inA.min = '0';
+          inA.placeholder = '0';
+          inA.className = 'score-input';
+          inA.value = (sc.a !== undefined && sc.a !== null) ? sc.a : '';
+          inA.dataset.scoreKey = key;
+          inA.dataset.side = 'a';
+          inA.addEventListener('change', onScoreInputChange);
+          var vs = document.createElement('span');
+          vs.className = 'ps-score-dash';
+          vs.textContent = '–';
+          var inB = document.createElement('input');
+          inB.type = 'number';
+          inB.min = '0';
+          inB.placeholder = '0';
+          inB.className = 'score-input';
+          inB.value = (sc.b !== undefined && sc.b !== null) ? sc.b : '';
+          inB.dataset.scoreKey = key;
+          inB.dataset.side = 'b';
+          inB.addEventListener('change', onScoreInputChange);
+          scoreWrap.appendChild(inA);
+          scoreWrap.appendChild(vs);
+          scoreWrap.appendChild(inB);
+          matchesEl.appendChild(scoreWrap);
 
           row.appendChild(matchesEl);
           sched.appendChild(row);
@@ -991,6 +986,36 @@
       render();
     }catch(e){
       showStatus('Save failed: ' + e.message, true);
+    }
+  }
+
+  // Scores are open to everyone — no sign-in needed. Saves the instant a score
+  // field is filled in and loses focus, and preserves whatever teams/bracket
+  // data is already in the shared store so this never clobbers organizer edits.
+  var scoreSaveTimer = null;
+  function onScoreInputChange(e){
+    var inp = e.target;
+    var key = inp.dataset.scoreKey;
+    if(!scoresData[key]) scoresData[key] = {a:'', b:''};
+    scoresData[key][inp.dataset.side] = inp.value.trim();
+    // live-refresh the standings table for this pool right away, without waiting on the network
+    render();
+    showStatus('Saving score…', false);
+    if(scoreSaveTimer) clearTimeout(scoreSaveTimer);
+    scoreSaveTimer = setTimeout(saveScoresOnly, 400);
+  }
+
+  async function saveScoresOnly(){
+    try{
+      var shared = {};
+      try{ shared = await fetchShared(); }catch(e){}
+      if(!shared.teams) shared.teams = teamsData;
+      shared.scores = scoresData;
+      if(!shared.bracketSeeds) shared.bracketSeeds = bracketSeeds;
+      await writeShared(shared);
+      showStatus('Score saved — visible to everyone viewing this page.', false);
+    }catch(e){
+      showStatus('Score save failed: ' + e.message, true);
     }
   }
 
