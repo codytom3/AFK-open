@@ -370,7 +370,7 @@
     <h1>AFK<br><span>OPEN.</span></h1>
     <p class="hero-sub">Compete • Connect • Give Back. Join us for the 2nd Annual charity pickleball tournament — every rally helps raise critical funds to support children and families across Southern California. Grab your paddle, bring your team.</p>
     <div class="hero-meta">
-      <span class="meta-chip">📅 October 4, 2026 · 1:00–5:00 PM</span>
+      <span class="meta-chip">📅 October 4, 2026 · 1:00–4:00 PM</span>
       <span class="meta-chip">📍 Manhattan Country Club, 1330 Parkview Avenue, Manhattan Beach</span>
       <span class="meta-chip">👥 32 players · 16 teams · Pool Play + Bracket</span>
       <span class="meta-chip">🎟️ $50 per player · includes food & beverages</span>
@@ -486,16 +486,16 @@
       </div>
       <div class="t-row">
         <div class="t-time">1:15 PM</div>
-        <div><div class="t-name">Pool Play Begins</div><div class="t-desc">4 dedicated courts — each pool stays on its own court for its entire round robin, no switching. Pool A (3 teams) wraps by 2:00 PM; Pools B &amp; D (4 teams) by 2:45 PM; Pool C (5 teams) runs until 3:45 PM. Games to 11, win by 2.</div></div>
+        <div><div class="t-name">Pool Play Begins</div><div class="t-desc">4 dedicated courts — each of the 4 pools (4 teams each) stays on its own court for its entire round robin, no switching. All pools wrap together by 2:45 PM. Games to 11, win by 2.</div></div>
         <div class="t-badge">Pool Play</div>
       </div>
       <div class="t-row">
-        <div class="t-time">4:00 PM</div>
+        <div class="t-time">3:00 PM</div>
         <div><div class="t-name">Championship Bracket</div><div class="t-desc">Top 2 teams from each pool (8 total) enter a clean single-elimination bracket — quarterfinals, semifinals, and the championship final.</div></div>
         <div class="t-badge">Knockout</div>
       </div>
       <div class="t-row">
-        <div class="t-time">5:00 PM</div>
+        <div class="t-time">4:00 PM</div>
         <div><div class="t-name">Awards & Closing Remarks</div><div class="t-desc">Trophy presentation, thank-yous to sponsors and volunteers, and a wrap-up celebrating what the day raised for AFK.</div></div>
         <div class="t-badge">Wrap</div>
       </div>
@@ -515,7 +515,7 @@
       <div class="rule-card">
         <div class="rn">RULE 01</div>
         <h3>Pool play</h3>
-        <p>16 teams split into 4 pools of 3, 4, 5, and 4. Round robin within each pool on that pool's own dedicated court — no switching courts mid-pool. Games to 11, win by 2.</p>
+        <p>16 teams split evenly into 4 pools of 4. Round robin within each pool on that pool's own dedicated court — no switching courts mid-pool. Games to 11, win by 2.</p>
       </div>
       <div class="rule-card">
         <div class="rn">RULE 02</div>
@@ -619,7 +619,7 @@
 <script>
 (function(){
   var POOLS = ['A','B','C','D'];
-  var POOL_SIZE = {A:3, B:4, C:5, D:4}; // 16 teams after 2 drops (Pool A and Pool D each down 1)
+  var POOL_SIZE = {A:4, B:4, C:4, D:4}; // 16 teams, evenly split 4/4/4/4
   var ORGANIZER_CODE = 'AFKOPEN2026'; // change this if you want a different sign-in code
 
   // Shared data store (npoint.io) — a free, no-login JSON endpoint that lets
@@ -651,49 +651,34 @@
     return true;
   }
 
-  // Master pool-play schedule: back to 4 dedicated courts, one pool per court,
-  // no sharing between pools. Pool sizes after the 2 drops: A=3, B=4, C=5, D=4.
-  // Pool A -> Court 1 (3 teams, 3 matches, 1:15-2:00 PM)
-  // Pool B -> Court 2 (4 teams, 6 matches, 1:15-2:45 PM)
-  // Pool C -> Court 3 (5 teams, 10 matches, 1:15-3:45 PM)
-  // Pool D -> Court 4 (4 teams, 6 matches, 1:15-2:45 PM)
+  // Master pool-play schedule: 4 dedicated courts, one pool per court, all
+  // pools now evenly sized at 4 teams each (6 matches, 1:15-2:45 PM) since
+  // moving Tristan Thompson/Diego Rey from Pool C to Pool A balanced things out.
   // 15-minute matches throughout. Team indices are 0-based per pool.
   var MASTER_SCHEDULE = [
     {time:'1:15 PM', matches:[
-      {pool:'A', court:1, pair:[1,2]}, {pool:'B', court:2, pair:[0,3]},
-      {pool:'C', court:3, pair:[1,4]}, {pool:'D', court:4, pair:[0,3]}
+      {pool:'A', court:1, pair:[0,1]}, {pool:'B', court:2, pair:[0,1]},
+      {pool:'C', court:3, pair:[0,1]}, {pool:'D', court:4, pair:[0,1]}
     ]},
     {time:'1:30 PM', matches:[
-      {pool:'A', court:1, pair:[0,2]}, {pool:'B', court:2, pair:[1,2]},
-      {pool:'C', court:3, pair:[2,3]}, {pool:'D', court:4, pair:[1,2]}
+      {pool:'A', court:1, pair:[2,3]}, {pool:'B', court:2, pair:[2,3]},
+      {pool:'C', court:3, pair:[2,3]}, {pool:'D', court:4, pair:[2,3]}
     ]},
     {time:'1:45 PM', matches:[
-      {pool:'A', court:1, pair:[0,1]}, {pool:'B', court:2, pair:[0,2]},
-      {pool:'C', court:3, pair:[0,4]}, {pool:'D', court:4, pair:[0,2]}
+      {pool:'A', court:1, pair:[0,2]}, {pool:'B', court:2, pair:[0,2]},
+      {pool:'C', court:3, pair:[0,2]}, {pool:'D', court:4, pair:[0,2]}
     ]},
     {time:'2:00 PM', matches:[
-      {pool:'B', court:2, pair:[1,3]}, {pool:'C', court:3, pair:[1,2]},
-      {pool:'D', court:4, pair:[1,3]}
+      {pool:'A', court:1, pair:[1,3]}, {pool:'B', court:2, pair:[1,3]},
+      {pool:'C', court:3, pair:[1,3]}, {pool:'D', court:4, pair:[1,3]}
     ]},
     {time:'2:15 PM', matches:[
-      {pool:'B', court:2, pair:[0,1]}, {pool:'C', court:3, pair:[0,3]},
-      {pool:'D', court:4, pair:[0,1]}
+      {pool:'A', court:1, pair:[0,3]}, {pool:'B', court:2, pair:[0,3]},
+      {pool:'C', court:3, pair:[0,3]}, {pool:'D', court:4, pair:[0,3]}
     ]},
     {time:'2:30 PM', matches:[
-      {pool:'B', court:2, pair:[2,3]}, {pool:'C', court:3, pair:[2,4]},
-      {pool:'D', court:4, pair:[2,3]}
-    ]},
-    {time:'2:45 PM', matches:[
-      {pool:'C', court:3, pair:[0,2]}
-    ]},
-    {time:'3:00 PM', matches:[
-      {pool:'C', court:3, pair:[1,3]}
-    ]},
-    {time:'3:15 PM', matches:[
-      {pool:'C', court:3, pair:[0,1]}
-    ]},
-    {time:'3:30 PM', matches:[
-      {pool:'C', court:3, pair:[3,4]}
+      {pool:'A', court:1, pair:[1,2]}, {pool:'B', court:2, pair:[1,2]},
+      {pool:'C', court:3, pair:[1,2]}, {pool:'D', court:4, pair:[1,2]}
     ]}
   ];
 
@@ -701,9 +686,9 @@
   // 16 teams after 2 drops: Kevin Kafayi/Zoilo Batista (was Pool A) and
   // Justin Speaker/Alan Yim (was Pool D) are no longer playing.
   var DEFAULT_TEAMS = {
-    A: ['Lucas Guilhot / Jacob Goad', 'Michael Reich / Ryan Irwin', 'Carol Wilkins / Kevin Wilkins'],
-    B: ['Chloe Jin / Iman Sennoun', 'Yatin Sareen / Andrew Devlin', 'Kevin Li / Aaron Weasel', 'Kevin Diller / Clint Cargile'],
-    C: ['Chris Kienzle / Lee Paul', 'Cody Tom / Emilee Monnig', 'Matt Bayle / Matt Bayle SO', 'Jesse Mason / Lindsay Pristou', 'Tristan Thompson / Diego Rey'],
+    A: ['Lucas Guilhot / Jacob Goad', 'Michael Reich / Ryan Irwin', 'Carol Wilkins / Kevin Wilkins', 'Tristan Thompson / Diego Rey'],
+    B: ['Chris Kienzle / Lee Paul', 'Yatin Sareen / Andrew Devlin', 'Kevin Li / Aaron Weasel', 'Kevin Diller / Clint Cargile'],
+    C: ['Chloe Jin / Iman Sennoun', 'Cody Tom / Emilee Monnig', 'Matt Bayle / Matt Bayle SO', 'Jesse Mason / Lindsay Pristou'],
     D: ['Gabriel Tienda / Shani Solomon', 'Margaret Haehl / Timmy Haehl', 'Brad Hileman / Esther Hileman', 'Will Cooper / Barbara Milton']
   };
 
